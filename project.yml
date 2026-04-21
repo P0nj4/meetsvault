@@ -49,6 +49,7 @@ targets:
               - meetsvault
         NSMicrophoneUsageDescription: "MeetsVault records your microphone so your voice is included in meeting transcripts."
         NSScreenCaptureUsageDescription: "MeetsVault captures system audio (required to transcribe what other meeting participants say). Your screen is not recorded."
+        CFBundleIconFile: AppIcon
         NSPrincipalClass: NSApplication
     entitlements:
       path: MeetsVault/MeetsVault.entitlements
