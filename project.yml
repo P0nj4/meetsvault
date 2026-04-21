@@ -1,0 +1,53 @@
+name: MeetsVault
+options:
+  bundleIdPrefix: com.germanpereyra
+  deploymentTarget:
+    macOS: "15.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    PRODUCT_BUNDLE_IDENTIFIER: com.germanpereyra.meetsvault
+    SWIFT_VERSION: "5.10"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    ONLY_ACTIVE_ARCH: YES
+    DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+    ENABLE_HARDENED_RUNTIME: YES
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  MeetsVault:
+    type: application
+    platform: macOS
+    sources:
+      - path: MeetsVault
+        excludes:
+          - "**/*.md"
+    info:
+      path: MeetsVault/Info.plist
+      properties:
+        LSUIElement: true
+        LSMinimumSystemVersion: "15.0"
+        CFBundleName: MeetsVault
+        CFBundleDisplayName: MeetsVault
+        CFBundleIdentifier: com.germanpereyra.meetsvault
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        CFBundleURLTypes:
+          - CFBundleURLName: com.germanpereyra.meetsvault.url
+            CFBundleURLSchemes:
+              - meetsvault
+        NSMicrophoneUsageDescription: "MeetsVault records your microphone so your voice is included in meeting transcripts."
+        NSScreenCaptureUsageDescription: "MeetsVault captures system audio (required to transcribe what other meeting participants say). Your screen is not recorded."
+        NSPrincipalClass: NSApplication
+    entitlements:
+      path: MeetsVault/MeetsVault.entitlements
+      properties:
+        com.apple.security.device.audio-input: true
+        com.apple.security.app-sandbox: false
+    settings:
+      base:
+        INFOPLIST_FILE: MeetsVault/Info.plist
+        CODE_SIGN_ENTITLEMENTS: MeetsVault/MeetsVault.entitlements

@@ -1,0 +1,395 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		29CFDE0AF5D1719B098B9ACE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */; };
+		646F55DD00829F5E76066B27 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */; };
+		6745C01ECA3787A5313F45AC /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A4CEA586A9310E64091332 /* AudioRecorder.swift */; };
+		814FEE3E291614D845B0612C /* URLSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */; };
+		BC3511D423FFCE3BC308B6BE /* MeetsVaultApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */; };
+		D3762547722FB992E0E03AEC /* MenuBarIconState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16EB76E494DA25EA5DD4A7E /* MenuBarIconState.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetsVaultApp.swift; sourceTree = "<group>"; };
+		24A4CEA586A9310E64091332 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSchemeHandler.swift; sourceTree = "<group>"; };
+		4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4F300998105A4A9668DDCB0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A592CEB2F35DF39649D3A594 /* MeetsVault.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetsVault.entitlements; sourceTree = "<group>"; };
+		BC135583112DEED7552A5242 /* MeetsVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetsVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		F16EB76E494DA25EA5DD4A7E /* MenuBarIconState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconState.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A2A81E65DC1771036085F39 /* Output */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Output;
+			sourceTree = "<group>";
+		};
+		1551C5ADE75CF8A982AD9324 /* Transcription */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Transcription;
+			sourceTree = "<group>";
+		};
+		53C72832C3E94D4A6DD0512C /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		5A3AEB693292DF5F701EBA4C /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				24A4CEA586A9310E64091332 /* AudioRecorder.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
+		6A2AC84EA6B0E35FF6F51D8C /* MeetsVault */ = {
+			isa = PBXGroup;
+			children = (
+				4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */,
+				0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */,
+				FE79F4E8857AEBA24A047D1E /* MenuBar */,
+				A55730307C44148631C01DE6 /* Notifications */,
+				0A2A81E65DC1771036085F39 /* Output */,
+				53C72832C3E94D4A6DD0512C /* Permissions */,
+				5A3AEB693292DF5F701EBA4C /* Recording */,
+				88C19389D8BF3EA4B0FCE246 /* Settings */,
+				1551C5ADE75CF8A982AD9324 /* Transcription */,
+				F40B4FDD314B5946E726BF8B /* UI */,
+				FF44471819E2AE101A0E0C03 /* URLScheme */,
+			);
+			path = MeetsVault;
+			sourceTree = "<group>";
+		};
+		88C19389D8BF3EA4B0FCE246 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		A55730307C44148631C01DE6 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		A6B9C5A5E3B5716F83117BCE /* MeetsVault */ = {
+			isa = PBXGroup;
+			children = (
+				4F300998105A4A9668DDCB0F /* Info.plist */,
+				A592CEB2F35DF39649D3A594 /* MeetsVault.entitlements */,
+				6A2AC84EA6B0E35FF6F51D8C /* MeetsVault */,
+			);
+			path = MeetsVault;
+			sourceTree = "<group>";
+		};
+		D01DC0925AF58193AA140EE0 = {
+			isa = PBXGroup;
+			children = (
+				A6B9C5A5E3B5716F83117BCE /* MeetsVault */,
+				D7ECD8E1CE477C7C40CF6D56 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D7ECD8E1CE477C7C40CF6D56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC135583112DEED7552A5242 /* MeetsVault.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F40B4FDD314B5946E726BF8B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		FE79F4E8857AEBA24A047D1E /* MenuBar */ = {
+			isa = PBXGroup;
+			children = (
+				C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */,
+				F16EB76E494DA25EA5DD4A7E /* MenuBarIconState.swift */,
+			);
+			path = MenuBar;
+			sourceTree = "<group>";
+		};
+		FF44471819E2AE101A0E0C03 /* URLScheme */ = {
+			isa = PBXGroup;
+			children = (
+				2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */,
+			);
+			path = URLScheme;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05B73FDDAC057095A740DE10 /* MeetsVault */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 059C29B4CD889362F475CB43 /* Build configuration list for PBXNativeTarget "MeetsVault" */;
+			buildPhases = (
+				31A38B92D9F4EBDC97B234BD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeetsVault;
+			packageProductDependencies = (
+			);
+			productName = MeetsVault;
+			productReference = BC135583112DEED7552A5242 /* MeetsVault.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		22C71E30E99B0ADE911571C5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					05B73FDDAC057095A740DE10 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3064D4C6D72B4034841FC330 /* Build configuration list for PBXProject "MeetsVault" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D01DC0925AF58193AA140EE0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D7ECD8E1CE477C7C40CF6D56 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				05B73FDDAC057095A740DE10 /* MeetsVault */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31A38B92D9F4EBDC97B234BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29CFDE0AF5D1719B098B9ACE /* AppDelegate.swift in Sources */,
+				6745C01ECA3787A5313F45AC /* AudioRecorder.swift in Sources */,
+				BC3511D423FFCE3BC308B6BE /* MeetsVaultApp.swift in Sources */,
+				646F55DD00829F5E76066B27 /* MenuBarController.swift in Sources */,
+				D3762547722FB992E0E03AEC /* MenuBarIconState.swift in Sources */,
+				814FEE3E291614D845B0612C /* URLSchemeHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0C68D1ACE75340A3E79C378B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MeetsVault/MeetsVault.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MeetsVault/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3EA35D30E2175243997C56D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.germanpereyra.meetsvault;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.10;
+			};
+			name = Release;
+		};
+		41A9108116CF626721AAE865 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MeetsVault/MeetsVault.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MeetsVault/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C1DCD7F1CA1441B0FC9143A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.germanpereyra.meetsvault;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.10;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		059C29B4CD889362F475CB43 /* Build configuration list for PBXNativeTarget "MeetsVault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41A9108116CF626721AAE865 /* Debug */,
+				0C68D1ACE75340A3E79C378B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3064D4C6D72B4034841FC330 /* Build configuration list for PBXProject "MeetsVault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1DCD7F1CA1441B0FC9143A5 /* Debug */,
+				3EA35D30E2175243997C56D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 22C71E30E99B0ADE911571C5 /* Project object */;
+}
