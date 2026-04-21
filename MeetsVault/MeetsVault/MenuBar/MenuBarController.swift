@@ -1,4 +1,7 @@
 import AppKit
+import os.log
+
+private let log = OSLog(subsystem: "com.germanpereyra.meetsvault", category: "MenuBar")
 
 final class MenuBarController: AudioRecorderDelegate {
     private let statusItem: NSStatusItem
@@ -8,7 +11,10 @@ final class MenuBarController: AudioRecorderDelegate {
         didSet { updateIcon() }
     }
     private var recordingTimer: Timer?
+    private var transcribingTimer: Timer?
+    private var transcribingPulse = false
     private var recordingStart: Date?
+    private var aboutWindowController: AboutWindowController?
 
     init() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -19,13 +25,23 @@ final class MenuBarController: AudioRecorderDelegate {
 
     deinit {
         recordingTimer?.invalidate()
+        transcribingTimer?.invalidate()
         NSStatusBar.system.removeStatusItem(statusItem)
     }
 
     // MARK: - Icon
 
     private func updateIcon() {
-        statusItem.button?.image = iconState.image
+        if iconState == .transcribing {
+            let symbol = transcribingPulse ? "waveform.badge.magnifyingglass" : "waveform"
+            let img = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)!
+            let cfg = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
+            let configured = img.withSymbolConfiguration(cfg)!
+            configured.isTemplate = true
+            statusItem.button?.image = configured
+        } else {
+            statusItem.button?.image = iconState.image
+        }
         statusItem.button?.toolTip = "MeetsVault"
     }
 
@@ -68,8 +84,19 @@ final class MenuBarController: AudioRecorderDelegate {
 
         menu.addItem(.separator())
 
+        menu.addItem(makeLanguageSubmenu())
         menu.addItem(makeModelSubmenu())
+
+        let reTranscribeItem = NSMenuItem(title: "Re-transcribe audio…", action: #selector(reTranscribeAudio), keyEquivalent: "")
+        reTranscribeItem.target = self
+        reTranscribeItem.isEnabled = recorder.state == .idle
+        menu.addItem(reTranscribeItem)
+
         menu.addItem(.separator())
+
+        let aboutItem = NSMenuItem(title: "About MeetsVault", action: #selector(showAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
 
         let quitItem = NSMenuItem(title: "Quit MeetsVault", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quitItem)
@@ -112,6 +139,42 @@ final class MenuBarController: AudioRecorderDelegate {
         NSWorkspace.shared.open(url)
     }
 
+    private func makeLanguageSubmenu() -> NSMenuItem {
+        let current = Settings.shared.transcriptionLanguage
+        let currentName = LanguageCode.top.first { $0.code == current }?.displayName ?? current.uppercased()
+        let item = NSMenuItem(title: "Language: \(currentName)", action: nil, keyEquivalent: "")
+        let sub = NSMenu()
+        for lang in LanguageCode.top {
+            let mi = NSMenuItem(title: lang.displayName, action: #selector(selectLanguage(_:)), keyEquivalent: "")
+            mi.target = self
+            mi.representedObject = lang.code
+            if lang.code == current { mi.state = .on }
+            sub.addItem(mi)
+        }
+        sub.addItem(.separator())
+        let moreItem = NSMenuItem(title: "More Languages…", action: #selector(showMoreLanguages), keyEquivalent: "")
+        moreItem.target = self
+        sub.addItem(moreItem)
+        item.submenu = sub
+        return item
+    }
+
+    @objc private func selectLanguage(_ sender: NSMenuItem) {
+        guard let code = sender.representedObject as? String else { return }
+        Settings.shared.transcriptionLanguage = code
+        buildMenu()
+    }
+
+    @objc private func showMoreLanguages() {
+        // Show all Whisper languages in a simple picker (uses NSMenu on a status item re-open).
+        // For now, build a second-level submenu is not feasible from here; show an alert with instructions.
+        let alert = NSAlert()
+        alert.messageText = "More Languages"
+        alert.informativeText = "Set a language code in:\ndefaults write com.germanpereyra.meetsvault transcriptionLanguage <code>\n\nExamples: ar, cs, nl, fi, pl, sv, tr…"
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
     private func makeModelSubmenu() -> NSMenuItem {
         let current = Settings.shared.selectedModelName
         let item = NSMenuItem(title: "Model: \(current)", action: nil, keyEquivalent: "")
@@ -146,6 +209,7 @@ final class MenuBarController: AudioRecorderDelegate {
                 try await ModelManager.shared.download(name) { _ in }
                 NSLog("[MeetsVault] Model downloaded: %@", name)
             } catch {
+                os_log("Model download failed: %{public}@", log: log, type: .error, error.localizedDescription)
                 await MainActor.run { self?.showError("Model download failed: \(error.localizedDescription)") }
             }
         }
@@ -189,6 +253,67 @@ final class MenuBarController: AudioRecorderDelegate {
         NSWorkspace.shared.open(url)
     }
 
+    @objc private func reTranscribeAudio() {
+        let panel = NSOpenPanel()
+        panel.title = "Select a WAV file to re-transcribe"
+        panel.allowedContentTypes = [.wav]
+        panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        guard panel.runModal() == .OK, let wavURL = panel.url else { return }
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let modelName = Settings.shared.selectedModelName
+                let language = Settings.shared.transcriptionLanguage
+                let engine = WhisperKitEngine()
+                try await engine.prepare(modelName: modelName) { _ in }
+                let segments = try await engine.transcribe(audioURL: wavURL, language: language.isEmpty ? nil : language)
+
+                let fmt = DateFormatter()
+                fmt.dateFormat = "yyyyMMdd-HHmmss"
+                let suffix = fmt.string(from: Date())
+                let baseName = wavURL.deletingPathExtension().lastPathComponent + "-retranscribed-\(suffix)"
+                let mdURL = FilenameBuilder.uniqueMarkdownURL(
+                    base: baseName,
+                    in: wavURL.deletingLastPathComponent()
+                )
+                let markdown = buildReTranscribeMarkdown(segments: segments, audioURL: wavURL, modelName: modelName, language: language)
+                try markdown.write(to: mdURL, atomically: true, encoding: .utf8)
+                NSWorkspace.shared.open(mdURL)
+                os_log("Re-transcribe saved: %{public}@", log: log, type: .info, mdURL.path)
+            } catch {
+                os_log("Re-transcribe failed: %{public}@", log: log, type: .error, error.localizedDescription)
+                await MainActor.run { self.showError("Re-transcription failed: \(error.localizedDescription)") }
+            }
+        }
+    }
+
+    private func buildReTranscribeMarkdown(segments: [TranscriptSegment], audioURL: URL, modelName: String, language: String) -> String {
+        var md = """
+        ---
+        audio_file: \(audioURL.lastPathComponent)
+        retranscribed_at: \(ISO8601DateFormatter().string(from: Date()))
+        language: \(language)
+        model: whisperkit-\(modelName)
+        ---
+
+        ## Transcript
+
+        """
+        for seg in segments {
+            let s = Int(seg.startSeconds)
+            let ts = String(format: "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60)
+            md += "[\(ts)] \(seg.text)\n"
+        }
+        return md
+    }
+
+    @objc private func showAbout() {
+        if aboutWindowController == nil {
+            aboutWindowController = AboutWindowController()
+        }
+        aboutWindowController?.show()
+    }
+
     // MARK: - AudioRecorderDelegate
 
     func recorder(_ recorder: AudioRecorder, didChangeState state: RecordingState) {
@@ -196,6 +321,9 @@ final class MenuBarController: AudioRecorderDelegate {
         case .idle:
             recordingTimer?.invalidate()
             recordingTimer = nil
+            transcribingTimer?.invalidate()
+            transcribingTimer = nil
+            transcribingPulse = false
             recordingStart = nil
             iconState = .idle
         case .recording:
@@ -208,6 +336,11 @@ final class MenuBarController: AudioRecorderDelegate {
             recordingTimer?.invalidate()
             recordingTimer = nil
             iconState = .transcribing
+            transcribingTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+                guard let self else { return }
+                self.transcribingPulse.toggle()
+                self.updateIcon()
+            }
         }
         buildMenu()
     }
@@ -217,16 +350,14 @@ final class MenuBarController: AudioRecorderDelegate {
     }
 
     func recorder(_ recorder: AudioRecorder, didFail error: Error) {
-        showError(error.localizedDescription)
+        os_log("Recorder error: %{public}@", log: log, type: .error, error.localizedDescription)
+        NotificationManager.shared.postInfo("MeetsVault error", body: error.localizedDescription)
     }
 
     // MARK: - Helpers
 
     private func showError(_ message: String) {
-        let alert = NSAlert()
-        alert.messageText = "MeetsVault"
-        alert.informativeText = message
-        alert.alertStyle = .warning
-        alert.runModal()
+        os_log("Error: %{public}@", log: log, type: .error, message)
+        NotificationManager.shared.postInfo("MeetsVault error", body: message)
     }
 }

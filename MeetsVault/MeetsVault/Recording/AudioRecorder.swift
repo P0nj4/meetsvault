@@ -1,4 +1,7 @@
 import Foundation
+import os.log
+
+private let log = OSLog(subsystem: "com.germanpereyra.meetsvault", category: "AudioRecorder")
 
 enum RecordingState {
     case idle
