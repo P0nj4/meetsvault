@@ -17,10 +17,18 @@ settings:
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: ""
 
+packages:
+  WhisperKit:
+    url: https://github.com/argmaxinc/WhisperKit
+    from: "0.9.0"
+
 targets:
   MeetsVault:
     type: application
     platform: macOS
+    dependencies:
+      - package: WhisperKit
+        product: WhisperKit
     sources:
       - path: MeetsVault
         excludes:

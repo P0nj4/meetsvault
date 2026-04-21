@@ -64,10 +64,52 @@ final class MenuBarController: AudioRecorderDelegate {
 
         menu.addItem(.separator())
 
+        menu.addItem(makeModelSubmenu())
+        menu.addItem(.separator())
+
         let quitItem = NSMenuItem(title: "Quit MeetsVault", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quitItem)
 
         statusItem.menu = menu
+    }
+
+    private func makeModelSubmenu() -> NSMenuItem {
+        let current = Settings.shared.selectedModelName
+        let item = NSMenuItem(title: "Model: \(current)", action: nil, keyEquivalent: "")
+        let sub = NSMenu()
+        for model in ModelManager.allModels {
+            let mi = NSMenuItem(
+                title: "\(model.name)  (\(model.displaySize))",
+                action: #selector(selectModel(_:)),
+                keyEquivalent: ""
+            )
+            mi.target = self
+            mi.representedObject = model.name
+            if model.name == current { mi.state = .on }
+            sub.addItem(mi)
+        }
+        item.submenu = sub
+        return item
+    }
+
+    @objc private func selectModel(_ sender: NSMenuItem) {
+        guard let name = sender.representedObject as? String else { return }
+        Settings.shared.selectedModelName = name
+        buildMenu()
+        if !ModelManager.shared.isDownloaded(name) {
+            downloadModel(name)
+        }
+    }
+
+    private func downloadModel(_ name: String) {
+        Task { [weak self] in
+            do {
+                try await ModelManager.shared.download(name) { _ in }
+                NSLog("[MeetsVault] Model downloaded: %@", name)
+            } catch {
+                await MainActor.run { self?.showError("Model download failed: \(error.localizedDescription)") }
+            }
+        }
     }
 
     private func elapsedString() -> String {

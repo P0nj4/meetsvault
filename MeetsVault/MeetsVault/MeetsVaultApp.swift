@@ -5,6 +5,6 @@ struct MeetsVaultApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        Settings { EmptyView() }
+        SwiftUI.Settings { EmptyView() }
     }
 }

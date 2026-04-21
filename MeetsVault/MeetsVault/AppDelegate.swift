@@ -3,15 +3,30 @@ import Carbon
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBarController: MenuBarController?
+    private var welcomeWindowController: WelcomeWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         registerURLSchemeHandler()
         menuBarController = MenuBarController()
+
+        if !Settings.shared.hasCompletedOnboarding {
+            showWelcomeWindow()
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         menuBarController = nil
+    }
+
+    // MARK: - Welcome
+
+    private func showWelcomeWindow() {
+        let wc = WelcomeWindowController { [weak self] in
+            self?.welcomeWindowController = nil
+        }
+        wc.show()
+        welcomeWindowController = wc
     }
 
     // MARK: - URL Scheme
@@ -33,6 +48,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         NSLog("[MeetsVault] Received URL: %@", urlString)
         URLSchemeHandler.handle(url, recorder: menuBarController?.recorder)
-
     }
 }

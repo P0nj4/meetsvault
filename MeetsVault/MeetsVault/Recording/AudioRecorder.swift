@@ -86,12 +86,26 @@ final class AudioRecorder {
             try AudioMixer.mix(mic: micURL, system: systemURL, output: combinedURL)
             NSLog("[MeetsVault] Mix complete: %@", combinedURL.path)
 
-            // Transcription + file writing happen in later phases.
-            // For Phase 2 verification: just log the output.
-            NSLog("[MeetsVault] combined.wav ready at: %@", combinedURL.path)
-            NSLog("[MeetsVault] Start: %@, End: %@", sessionStartDate?.description ?? "", endDate.description)
+            let modelName = Settings.shared.selectedModelName
+            let language = Settings.shared.transcriptionLanguage
+            NSLog("[MeetsVault] Transcribing with model: %@, language: %@", modelName, language)
+
+            let engine = WhisperKitEngine()
+            try await engine.prepare(modelName: modelName, progress: { p in
+                NSLog("[MeetsVault] Model load: %.0f%%", p * 100)
+            })
+            let segments = try await engine.transcribe(
+                audioURL: combinedURL,
+                language: language.isEmpty ? nil : language
+            )
+            for seg in segments {
+                NSLog("[MeetsVault] [%@] %@", Self.formatTime(seg.startSeconds), seg.text)
+            }
+            NSLog("[MeetsVault] Transcription complete — %d segments", segments.count)
+
+            // Phase 5 will write the markdown file and notify.
         } catch {
-            NSLog("[MeetsVault] Mix failed: %@", error.localizedDescription)
+            NSLog("[MeetsVault] Stop failed: %@", error.localizedDescription)
             delegate?.recorder(self, didFail: error)
         }
 
@@ -99,6 +113,11 @@ final class AudioRecorder {
         sessionTitle = nil
         sessionStartDate = nil
         state = .idle
+    }
+
+    private static func formatTime(_ seconds: Double) -> String {
+        let s = Int(seconds)
+        return String(format: "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60)
     }
 }
 
