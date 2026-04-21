@@ -33,5 +33,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         NSLog("[MeetsVault] Received URL: %@", urlString)
         URLSchemeHandler.handle(url, recorder: menuBarController?.recorder)
+
     }
 }
