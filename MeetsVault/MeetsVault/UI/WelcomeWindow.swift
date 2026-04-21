@@ -23,6 +23,10 @@ final class WelcomeWindowController: NSWindowController {
         showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
+
+    func closeWindow() {
+        window?.close()
+    }
 }
 
 // MARK: - SwiftUI view
@@ -35,6 +39,8 @@ private struct WelcomeView: View {
     @State private var isDownloading = false
     @State private var downloadProgress: Double = 0
     @State private var downloadError: String?
+    @State private var micGranted = PermissionsChecker.microphoneGranted
+    @State private var screenGranted = PermissionsChecker.screenRecordingGranted
 
     var body: some View {
         VStack(spacing: 0) {
@@ -117,35 +123,54 @@ private struct WelcomeView: View {
                 permissionRow(
                     icon: "mic.fill",
                     title: "Microphone",
-                    description: "Captures your voice during meetings."
+                    description: "Captures your voice during meetings.",
+                    granted: micGranted
                 )
                 permissionRow(
                     icon: "display",
                     title: "Screen Recording",
-                    description: "Captures system audio from other participants. Your screen is never recorded."
+                    description: "Captures system audio from other participants. Your screen is never recorded.",
+                    granted: screenGranted
                 )
             }
-            Text("After granting Screen Recording, you may need to quit and relaunch MeetsVault once.")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Button("Request Permissions") {
-                requestPermissions()
+            if !screenGranted {
+                Text("After granting Screen Recording, you may need to quit and relaunch MeetsVault once.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-            .buttonStyle(.borderedProminent)
+            if allPermissionsGranted {
+                Label("All permissions granted", systemImage: "checkmark.seal.fill")
+                    .foregroundColor(.green)
+                    .fontWeight(.semibold)
+            } else {
+                Button("Request Permissions") {
+                    requestPermissions()
+                }
+                .buttonStyle(.borderedProminent)
+            }
         }
         .padding(32)
+        .onAppear { refreshPermissions() }
     }
 
-    private func permissionRow(icon: String, title: String, description: String) -> some View {
+    private var allPermissionsGranted: Bool { micGranted && screenGranted }
+
+    private func permissionRow(icon: String, title: String, description: String, granted: Bool) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon)
+            Image(systemName: granted ? "checkmark.circle.fill" : icon)
                 .frame(width: 24)
-                .foregroundColor(.accentColor)
+                .foregroundColor(granted ? .green : .accentColor)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).fontWeight(.semibold)
-                Text(description).foregroundColor(.secondary)
+                Text(granted ? "Access granted" : description)
+                    .foregroundColor(granted ? .green : .secondary)
             }
         }
+    }
+
+    private func refreshPermissions() {
+        micGranted = PermissionsChecker.microphoneGranted
+        screenGranted = PermissionsChecker.screenRecordingGranted
     }
 
     private var downloadStep: some View {
@@ -156,14 +181,12 @@ private struct WelcomeView: View {
                     .foregroundColor(.accentColor)
                 Text("Downloading \(selectedModel) model…")
                     .font(.title3.bold())
-                ProgressView(value: downloadProgress > 0.05 ? downloadProgress : nil)
+                ProgressView(value: downloadProgress > 0 ? downloadProgress : nil)
                     .progressViewStyle(.linear)
                     .frame(width: 300)
-                if downloadProgress > 0.05 {
-                    Text(String(format: "%.0f%%", downloadProgress * 100))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                Text(downloadProgress > 0 ? String(format: "%.0f%%", downloadProgress * 100) : "Starting…")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             } else if let error = downloadError {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 48))
@@ -251,6 +274,7 @@ private struct WelcomeView: View {
         Task {
             _ = await PermissionsChecker.requestMicrophone()
             PermissionsChecker.requestScreenRecording()
+            await MainActor.run { refreshPermissions() }
         }
     }
 

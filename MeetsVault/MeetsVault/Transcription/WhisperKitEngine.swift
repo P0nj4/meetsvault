@@ -13,16 +13,19 @@ final class WhisperKitEngine: TranscriptionEngine {
 
     func prepare(modelName: String, progress: @escaping (Double) -> Void) async throws {
         let variant = "openai_whisper-\(modelName)"
-        progress(0.05)
-        pipeline = try await WhisperKit(
-            model: variant,
+        progress(0.0)
+
+        // Download with progress reporting (no-op if already cached)
+        let modelFolder = try await WhisperKit.download(
+            variant: variant,
             downloadBase: Self.modelsDir,
-            verbose: false,
-            logLevel: .none,
-            prewarm: true,
-            load: true,
-            download: true
+            progressCallback: { p in
+                progress(p.fractionCompleted * 0.8)  // download = 0→80%
+            }
         )
+
+        progress(0.85)
+        pipeline = try await WhisperKit(modelFolder: modelFolder.path())
         progress(1.0)
     }
 

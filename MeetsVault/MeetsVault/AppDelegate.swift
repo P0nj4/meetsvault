@@ -25,6 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showWelcomeWindow() {
         let wc = WelcomeWindowController { [weak self] in
+            self?.welcomeWindowController?.closeWindow()
             self?.welcomeWindowController = nil
         }
         wc.show()
