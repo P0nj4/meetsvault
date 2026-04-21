@@ -62,6 +62,10 @@ final class MenuBarController: AudioRecorderDelegate {
         openFolderItem.target = self
         menu.addItem(openFolderItem)
 
+        let recentItem = NSMenuItem(title: "Recent Transcripts", action: nil, keyEquivalent: "")
+        recentItem.submenu = makeRecentTranscriptsMenu()
+        menu.addItem(recentItem)
+
         menu.addItem(.separator())
 
         menu.addItem(makeModelSubmenu())
@@ -71,6 +75,41 @@ final class MenuBarController: AudioRecorderDelegate {
         menu.addItem(quitItem)
 
         statusItem.menu = menu
+    }
+
+    private func makeRecentTranscriptsMenu() -> NSMenu {
+        let sub = NSMenu()
+        let meetingsDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        let recents = (try? FileManager.default.contentsOfDirectory(
+            at: meetingsDir,
+            includingPropertiesForKeys: [.contentModificationDateKey],
+            options: .skipsHiddenFiles
+        ))?.filter { $0.pathExtension == "md" }
+            .sorted {
+                let d1 = (try? $0.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate ?? .distantPast
+                let d2 = (try? $1.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate ?? .distantPast
+                return d1 > d2
+            }
+            .prefix(5) ?? []
+
+        if recents.isEmpty {
+            let empty = NSMenuItem(title: "No recent transcripts", action: nil, keyEquivalent: "")
+            empty.isEnabled = false
+            sub.addItem(empty)
+        } else {
+            for url in recents {
+                let mi = NSMenuItem(title: url.deletingPathExtension().lastPathComponent, action: #selector(openTranscript(_:)), keyEquivalent: "")
+                mi.target = self
+                mi.representedObject = url
+                sub.addItem(mi)
+            }
+        }
+        return sub
+    }
+
+    @objc private func openTranscript(_ sender: NSMenuItem) {
+        guard let url = sender.representedObject as? URL else { return }
+        NSWorkspace.shared.open(url)
     }
 
     private func makeModelSubmenu() -> NSMenuItem {
@@ -174,7 +213,7 @@ final class MenuBarController: AudioRecorderDelegate {
     }
 
     func recorder(_ recorder: AudioRecorder, didFinishTranscript url: URL, title: String) {
-        // Wired in Phase 5
+        buildMenu()
     }
 
     func recorder(_ recorder: AudioRecorder, didFail error: Error) {

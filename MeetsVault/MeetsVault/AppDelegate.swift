@@ -7,8 +7,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        _ = NotificationManager.shared  // initialize delegate early
         registerURLSchemeHandler()
         menuBarController = MenuBarController()
+        AudioRetentionJob.run()
 
         if !Settings.shared.hasCompletedOnboarding {
             showWelcomeWindow()

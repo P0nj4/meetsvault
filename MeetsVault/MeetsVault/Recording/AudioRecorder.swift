@@ -26,6 +26,7 @@ final class AudioRecorder {
     private var sessionDir: URL?
     private var sessionTitle: String?
     private var sessionStartDate: Date?
+    private var sessionEndDate: Date?
     private let micCapture = MicrophoneCapture()
     private let systemCapture = SystemAudioCapture()
 
@@ -73,6 +74,7 @@ final class AudioRecorder {
 
         state = .transcribing
         let endDate = Date()
+        sessionEndDate = endDate
 
         micCapture.stop()
         await systemCapture.stop()
@@ -103,7 +105,29 @@ final class AudioRecorder {
             }
             NSLog("[MeetsVault] Transcription complete — %d segments", segments.count)
 
-            // Phase 5 will write the markdown file and notify.
+            let mdURL = try TranscriptWriter.write(
+                title: sessionTitle,
+                startedAt: sessionStartDate ?? endDate,
+                endedAt: endDate,
+                language: language,
+                modelName: modelName,
+                segments: segments,
+                combinedAudioURL: combinedURL
+            )
+            NSLog("[MeetsVault] Transcript saved: %@", mdURL.path)
+
+            let title = sessionTitle ?? "Untitled"
+            let duration = endDate.timeIntervalSince(sessionStartDate ?? endDate)
+            NotificationManager.shared.postTranscriptReady(fileURL: mdURL, title: title, duration: duration)
+
+            let capturedDelegate = delegate
+            let capturedTitle = title
+            DispatchQueue.main.async {
+                capturedDelegate?.recorder(self, didFinishTranscript: mdURL, title: capturedTitle)
+            }
+
+            // Clean up session folder (audio was moved to ~/Meetings)
+            try? FileManager.default.removeItem(at: dir)
         } catch {
             NSLog("[MeetsVault] Stop failed: %@", error.localizedDescription)
             delegate?.recorder(self, didFail: error)
@@ -112,6 +136,7 @@ final class AudioRecorder {
         sessionDir = nil
         sessionTitle = nil
         sessionStartDate = nil
+        sessionEndDate = nil
         state = .idle
     }
 
