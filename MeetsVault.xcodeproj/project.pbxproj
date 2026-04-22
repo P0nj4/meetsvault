@@ -24,6 +24,7 @@
 		7EE8E737FB8A1136D7344588 /* MicrophoneCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC18FE369DD26F5E1E961877 /* MicrophoneCapture.swift */; };
 		814FEE3E291614D845B0612C /* URLSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */; };
 		9559D58701302BEE2AB8DB8A /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E56D0295B9A43DDD92B9F86A /* NotificationManager.swift */; };
+		970A0502EDDF313450C0056B /* ModelDownloadWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EBDB53CAE97325582CB72B /* ModelDownloadWindow.swift */; };
 		A300C943628011CAC5089429 /* AudioRetentionJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF559BF6848058076AE7247A /* AudioRetentionJob.swift */; };
 		A5B78E68588B08C6C0F80BBD /* TranscriptSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEA4C25517B4A0C5E9A2A17 /* TranscriptSegment.swift */; };
 		B060E6043227E5D9F08C25CB /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B37CA1BD167F859DCEBB2D /* TranscriptionEngine.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		00EBDB53CAE97325582CB72B /* ModelDownloadWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloadWindow.swift; sourceTree = "<group>"; };
 		0240FE17F2791399C5D33E51 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		0BEA4C25517B4A0C5E9A2A17 /* TranscriptSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptSegment.swift; sourceTree = "<group>"; };
 		0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetsVaultApp.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				435DF182509402CA3B5199E4 /* AboutWindow.swift */,
+				00EBDB53CAE97325582CB72B /* ModelDownloadWindow.swift */,
 				D4C2942545B3334C710A1837 /* WelcomeWindow.swift */,
 			);
 			path = UI;
@@ -296,6 +299,7 @@
 				646F55DD00829F5E76066B27 /* MenuBarController.swift in Sources */,
 				D3762547722FB992E0E03AEC /* MenuBarIconState.swift in Sources */,
 				7EE8E737FB8A1136D7344588 /* MicrophoneCapture.swift in Sources */,
+				970A0502EDDF313450C0056B /* ModelDownloadWindow.swift in Sources */,
 				1731B9148C4C4E88AAE20BEE /* ModelManager.swift in Sources */,
 				9559D58701302BEE2AB8DB8A /* NotificationManager.swift in Sources */,
 				495B5B560A8036840DE50FFA /* PermissionsChecker.swift in Sources */,
