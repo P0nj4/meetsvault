@@ -37,11 +37,13 @@ final class WhisperKitEngine: TranscriptionEngine {
         }
         let results = try await pipeline.transcribe(audioPath: audioURL.path, decodeOptions: options)
         return (results ?? []).flatMap { result in
-            result.segments.map { seg in
-                TranscriptSegment(
+            result.segments.compactMap { seg -> TranscriptSegment? in
+                let cleaned = TranscriptCleaner.stripTokens(seg.text)
+                guard !cleaned.isEmpty else { return nil }
+                return TranscriptSegment(
                     startSeconds: Double(seg.start),
                     endSeconds: Double(seg.end),
-                    text: seg.text.trimmingCharacters(in: .whitespaces)
+                    text: cleaned
                 )
             }
         }

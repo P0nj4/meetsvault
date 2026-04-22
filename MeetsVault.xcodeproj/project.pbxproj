@@ -31,6 +31,7 @@
 		BEC80304515C90B753A97A4C /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C2942545B3334C710A1837 /* WelcomeWindow.swift */; };
 		D1261F54724220C26EBEA1A7 /* WhisperKitEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F450DE0C8F07952BB63BC325 /* WhisperKitEngine.swift */; };
 		D3762547722FB992E0E03AEC /* MenuBarIconState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16EB76E494DA25EA5DD4A7E /* MenuBarIconState.swift */; };
+		E742E852654C04D44F02CE9E /* TranscriptCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66345DF0D004B520EBB62C9 /* TranscriptCleaner.swift */; };
 		EE58E32D237107B54F9315D3 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = C15EA9319BFFB6841B41C869 /* WhisperKit */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		DCD533054816430AFC9D1E54 /* CaptureError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureError.swift; sourceTree = "<group>"; };
 		E1B37CA1BD167F859DCEBB2D /* TranscriptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionEngine.swift; sourceTree = "<group>"; };
 		E56D0295B9A43DDD92B9F86A /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		E66345DF0D004B520EBB62C9 /* TranscriptCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptCleaner.swift; sourceTree = "<group>"; };
 		F16EB76E494DA25EA5DD4A7E /* MenuBarIconState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconState.swift; sourceTree = "<group>"; };
 		F450DE0C8F07952BB63BC325 /* WhisperKitEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperKitEngine.swift; sourceTree = "<group>"; };
 		FB5C6D21C63968FC13F12E5A /* AudioMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixer.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				A6CC503FC331F1230FBFD169 /* ModelManager.swift */,
+				E66345DF0D004B520EBB62C9 /* TranscriptCleaner.swift */,
 				E1B37CA1BD167F859DCEBB2D /* TranscriptionEngine.swift */,
 				0BEA4C25517B4A0C5E9A2A17 /* TranscriptSegment.swift */,
 				F450DE0C8F07952BB63BC325 /* WhisperKitEngine.swift */,
@@ -298,6 +301,7 @@
 				495B5B560A8036840DE50FFA /* PermissionsChecker.swift in Sources */,
 				70BE0C71BD0EA61B369E0E21 /* Settings.swift in Sources */,
 				4D5CFAEC82ADB5D1C25E3932 /* SystemAudioCapture.swift in Sources */,
+				E742E852654C04D44F02CE9E /* TranscriptCleaner.swift in Sources */,
 				A5B78E68588B08C6C0F80BBD /* TranscriptSegment.swift in Sources */,
 				39FAE49AFD260532D3AAEA15 /* TranscriptWriter.swift in Sources */,
 				B060E6043227E5D9F08C25CB /* TranscriptionEngine.swift in Sources */,
