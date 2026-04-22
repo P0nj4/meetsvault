@@ -5,16 +5,28 @@ final class Settings {
     private let defaults = UserDefaults.standard
 
     private enum Key {
-        static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let selectedModelName = "selectedModelName"
         static let transcriptionLanguage = "transcriptionLanguage"
         static let downloadedModels = "downloadedModels"
         static let meetingsDirectoryPath = "meetingsDirectoryPath"
     }
 
+    private static var onboardingFlagURL: URL {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        return appSupport.appendingPathComponent("MeetsVault/onboarding_complete")
+    }
+
     var hasCompletedOnboarding: Bool {
-        get { defaults.bool(forKey: Key.hasCompletedOnboarding) }
-        set { defaults.set(newValue, forKey: Key.hasCompletedOnboarding) }
+        get { FileManager.default.fileExists(atPath: Self.onboardingFlagURL.path) }
+        set {
+            if newValue {
+                let dir = Self.onboardingFlagURL.deletingLastPathComponent()
+                try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+                FileManager.default.createFile(atPath: Self.onboardingFlagURL.path, contents: nil)
+            } else {
+                try? FileManager.default.removeItem(at: Self.onboardingFlagURL)
+            }
+        }
     }
 
     var selectedModelName: String {

@@ -31,6 +31,8 @@ final class WelcomeWindowController: NSWindowController {
 
 // MARK: - SwiftUI view
 
+private let brandColor = Color(red: 0xFB / 255.0, green: 0x74 / 255.0, blue: 0x59 / 255.0)
+
 private struct WelcomeView: View {
     let onFinish: () -> Void
 
@@ -77,7 +79,7 @@ private struct WelcomeView: View {
         VStack(spacing: 20) {
             Image(systemName: "waveform.circle.fill")
                 .font(.system(size: 64))
-                .foregroundColor(.accentColor)
+                .foregroundColor(brandColor)
             Text("Welcome to MeetsVault")
                 .font(.title.bold())
             Text("MeetsVault lives in your menu bar and records meetings locally — no cloud, no subscription, fully private. Transcription runs on your Mac using Apple Neural Engine.")
@@ -91,22 +93,38 @@ private struct WelcomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Choose a Transcription Model")
                 .font(.title2.bold())
-            Text("The model downloads once and runs locally. Larger models are more accurate but slower.")
+            Text("Transcription runs entirely on your Mac — no audio is ever sent to a server. The model is a local AI that downloads once and stays on your device.")
                 .foregroundColor(.secondary)
             Divider()
             ForEach(ModelManager.allModels, id: \.name) { model in
-                HStack {
+                HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(model.name)
-                            .fontWeight(model.name == "small" ? .semibold : .regular)
-                        Text(model.displaySize)
+                        HStack(spacing: 6) {
+                            Text(model.name)
+                                .fontWeight(model.name == "small" ? .semibold : .regular)
+                            if model.name == "small" {
+                                Text("recommended")
+                                    .font(.caption2)
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 2)
+                                    .background(brandColor.opacity(0.15))
+                                    .foregroundColor(brandColor)
+                                    .cornerRadius(4)
+                            }
+                        }
+                        Text(modelDescription(model.name))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     Spacer()
-                    if selectedModel == model.name {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.accentColor)
+                    VStack(alignment: .trailing, spacing: 2) {
+                        if selectedModel == model.name {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(brandColor)
+                        }
+                        Text(model.displaySize)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
                 .contentShape(Rectangle())
@@ -126,7 +144,7 @@ private struct WelcomeView: View {
             Divider()
             HStack(spacing: 12) {
                 Image(systemName: "folder.fill")
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(brandColor)
                 Text(displayPath(meetingsDir))
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -197,6 +215,7 @@ private struct WelcomeView: View {
                     requestPermissions()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(brandColor)
             }
         }
         .padding(32)
@@ -228,7 +247,7 @@ private struct WelcomeView: View {
             if isDownloading {
                 Image(systemName: "arrow.down.circle")
                     .font(.system(size: 48))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(brandColor)
                 Text("Downloading \(selectedModel) model…")
                     .font(.title3.bold())
                 ProgressView(value: downloadProgress > 0 ? downloadProgress : nil)
@@ -262,7 +281,7 @@ private struct WelcomeView: View {
         VStack(spacing: 20) {
             Image(systemName: "menubar.dock.rectangle")
                 .font(.system(size: 64))
-                .foregroundColor(.accentColor)
+                .foregroundColor(brandColor)
             Text("You're all set!")
                 .font(.title.bold())
             Text("MeetsVault lives in your menu bar. Click the waveform icon to start or stop recordings. You can also trigger it via URL scheme:\nmeetsvault://start?title=Meeting+Name")
@@ -270,6 +289,17 @@ private struct WelcomeView: View {
                 .foregroundColor(.secondary)
         }
         .padding(40)
+    }
+
+    private func modelDescription(_ name: String) -> String {
+        switch name {
+        case "tiny":  return "Fast transcription. Good for short meetings or limited storage."
+        case "base":  return "Casual use where speed matters more than accuracy."
+        case "small": return "Best for most users. Solid accuracy at reasonable speed."
+        case "medium": return "Better with accents, technical terms, or multiple languages."
+        case "large-v3": return "Highest accuracy. Slow and needs ~3 GB of disk space."
+        default: return ""
+        }
     }
 
     // MARK: Navigation
@@ -282,6 +312,7 @@ private struct WelcomeView: View {
                 advanceStep()
             }
             .buttonStyle(.borderedProminent)
+            .tint(brandColor)
             .keyboardShortcut(.defaultAction)
 
         case 4:
@@ -291,14 +322,17 @@ private struct WelcomeView: View {
                     startDownload()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(brandColor)
             } else if !isDownloading {
                 Button("Next") { step += 1 }
                     .buttonStyle(.borderedProminent)
+                    .tint(brandColor)
                     .keyboardShortcut(.defaultAction)
             } else {
                 // downloading — button disabled
                 Button("Next") {}
                     .buttonStyle(.borderedProminent)
+                    .tint(brandColor)
                     .disabled(true)
             }
 
@@ -308,6 +342,7 @@ private struct WelcomeView: View {
                 onFinish()
             }
             .buttonStyle(.borderedProminent)
+            .tint(brandColor)
             .keyboardShortcut(.defaultAction)
         }
     }
