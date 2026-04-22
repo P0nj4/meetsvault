@@ -17,6 +17,7 @@ final class MenuBarController: AudioRecorderDelegate {
     private let transcribingValues: [Double] = [1.0, 0.6, 0.2, 0.6]
     private var recordingStart: Date?
     private var aboutWindowController: AboutWindowController?
+    private var modelDownloadWindowController: ModelDownloadWindowController?
     private var isDownloadingModel = false
 
     init() {
@@ -197,13 +198,19 @@ final class MenuBarController: AudioRecorderDelegate {
 
     @objc private func openModelDownloadWindow() {
         guard recorder.state == .idle, !isDownloadingModel else { return }
-        (NSApp.delegate as? AppDelegate)?.showModelDownloadWindow(
+        guard modelDownloadWindowController == nil else {
+            modelDownloadWindowController?.show()
+            return
+        }
+        let wc = ModelDownloadWindowController(
             preselected: Settings.shared.selectedModelName,
             onCommit: { [weak self] committed in
                 Settings.shared.selectedModelName = committed
+                self?.modelDownloadWindowController = nil
                 self?.buildMenu()
             },
             onCancel: { [weak self] in
+                self?.modelDownloadWindowController = nil
                 self?.buildMenu()
             },
             onDownloadStateChange: { [weak self] downloading in
@@ -211,6 +218,8 @@ final class MenuBarController: AudioRecorderDelegate {
                 self?.buildMenu()
             }
         )
+        modelDownloadWindowController = wc
+        wc.show()
     }
 
     private func elapsedString() -> String {
