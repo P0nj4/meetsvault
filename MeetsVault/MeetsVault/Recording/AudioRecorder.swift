@@ -99,10 +99,10 @@ final class AudioRecorder {
             try await engine.prepare(modelName: modelName, progress: { p in
                 NSLog("[MeetsVault] Model load: %.0f%%", p * 100)
             })
-            let segments = try await engine.transcribe(
-                audioURL: combinedURL,
-                language: language.isEmpty ? nil : language
-            )
+            let lang = language.isEmpty ? nil : language
+            let micSegments = try await engine.transcribe(audioURL: micURL, language: lang, speaker: .you)
+            let systemSegments = try await engine.transcribe(audioURL: systemURL, language: lang, speaker: .others)
+            let segments = (micSegments + systemSegments).sorted { $0.startSeconds < $1.startSeconds }
             for seg in segments {
                 NSLog("[MeetsVault] [%@] %@", Self.formatTime(seg.startSeconds), seg.text)
             }

@@ -29,7 +29,7 @@ final class WhisperKitEngine: TranscriptionEngine {
         progress(1.0)
     }
 
-    func transcribe(audioURL: URL, language: String?) async throws -> [TranscriptSegment] {
+    func transcribe(audioURL: URL, language: String?, speaker: Speaker) async throws -> [TranscriptSegment] {
         guard let pipeline else { throw EngineError.notPrepared }
         var options = DecodingOptions()
         if let lang = language {
@@ -43,7 +43,8 @@ final class WhisperKitEngine: TranscriptionEngine {
                 return TranscriptSegment(
                     startSeconds: Double(seg.start),
                     endSeconds: Double(seg.end),
-                    text: cleaned
+                    text: cleaned,
+                    speaker: speaker
                 )
             }
         }

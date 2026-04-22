@@ -5,5 +5,5 @@ protocol TranscriptionEngine {
     func prepare(modelName: String, progress: @escaping (Double) -> Void) async throws
 
     /// Transcribe the given .wav file. Returns ordered segments.
-    func transcribe(audioURL: URL, language: String?) async throws -> [TranscriptSegment]
+    func transcribe(audioURL: URL, language: String?, speaker: Speaker) async throws -> [TranscriptSegment]
 }

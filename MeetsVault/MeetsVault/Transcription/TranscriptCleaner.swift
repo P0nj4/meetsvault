@@ -22,6 +22,7 @@ enum TranscriptCleaner {
         var result: [TranscriptSegment] = []
         var groupStart = segments[0].startSeconds
         var groupEnd = segments[0].endSeconds
+        var groupSpeaker = segments[0].speaker
         var buffer = segments[0].text
         var previousEnd = segments[0].endSeconds
 
@@ -29,14 +30,17 @@ enum TranscriptCleaner {
             let gap = seg.startSeconds - previousEnd
             let longPause = gap > pauseThreshold
             let longParagraph = buffer.count >= maxParagraphChars && endsSentence(buffer)
+            let speakerChange = seg.speaker != groupSpeaker
 
-            if longPause || longParagraph {
+            if longPause || longParagraph || speakerChange {
                 result.append(TranscriptSegment(
                     startSeconds: groupStart,
                     endSeconds: groupEnd,
-                    text: buffer
+                    text: buffer,
+                    speaker: groupSpeaker
                 ))
                 groupStart = seg.startSeconds
+                groupSpeaker = seg.speaker
                 buffer = seg.text
             } else {
                 buffer = buffer.isEmpty ? seg.text : buffer + " " + seg.text
@@ -48,7 +52,8 @@ enum TranscriptCleaner {
         result.append(TranscriptSegment(
             startSeconds: groupStart,
             endSeconds: groupEnd,
-            text: buffer
+            text: buffer,
+            speaker: groupSpeaker
         ))
         return result
     }

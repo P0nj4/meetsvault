@@ -76,7 +76,8 @@ enum TranscriptWriter {
         let merged = TranscriptCleaner.merge(segments)
         for seg in merged {
             let ts = formatTimestamp(seg.startSeconds)
-            md += "[\(ts)] \(seg.text)\n\n"
+            let label = seg.speaker == .you ? "You" : "Others"
+            md += "[\(ts)] **\(label):** \(seg.text)\n\n"
         }
 
         md = md.trimmingCharacters(in: .newlines)

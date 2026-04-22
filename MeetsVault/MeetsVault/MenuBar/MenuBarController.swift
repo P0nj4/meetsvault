@@ -12,7 +12,8 @@ final class MenuBarController: AudioRecorderDelegate {
     }
     private var recordingTimer: Timer?
     private var transcribingTimer: Timer?
-    private var transcribingPulse = false
+    private var transcribingFrame = 0
+    private let transcribingValues: [Double] = [1.0, 0.6, 0.2, 0.6]
     private var recordingStart: Date?
     private var aboutWindowController: AboutWindowController?
 
@@ -33,8 +34,8 @@ final class MenuBarController: AudioRecorderDelegate {
 
     private func updateIcon() {
         if iconState == .transcribing {
-            let symbol = transcribingPulse ? "waveform.badge.magnifyingglass" : "waveform"
-            let img = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)!
+            let value = transcribingValues[transcribingFrame % transcribingValues.count]
+            let img = NSImage(systemSymbolName: "waveform", variableValue: value, accessibilityDescription: nil)!
             let cfg = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
             let configured = img.withSymbolConfiguration(cfg)!
             configured.isTemplate = true
@@ -266,7 +267,7 @@ final class MenuBarController: AudioRecorderDelegate {
                 let language = Settings.shared.transcriptionLanguage
                 let engine = WhisperKitEngine()
                 try await engine.prepare(modelName: modelName) { _ in }
-                let segments = try await engine.transcribe(audioURL: wavURL, language: language.isEmpty ? nil : language)
+                let segments = try await engine.transcribe(audioURL: wavURL, language: language.isEmpty ? nil : language, speaker: .you)
 
                 let fmt = DateFormatter()
                 fmt.dateFormat = "yyyyMMdd-HHmmss"
@@ -323,7 +324,7 @@ final class MenuBarController: AudioRecorderDelegate {
             recordingTimer = nil
             transcribingTimer?.invalidate()
             transcribingTimer = nil
-            transcribingPulse = false
+            transcribingFrame = 0
             recordingStart = nil
             iconState = .idle
         case .recording:
@@ -338,7 +339,7 @@ final class MenuBarController: AudioRecorderDelegate {
             iconState = .transcribing
             transcribingTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
                 guard let self else { return }
-                self.transcribingPulse.toggle()
+                self.transcribingFrame = (self.transcribingFrame + 1) % self.transcribingValues.count
                 self.updateIcon()
             }
         }
