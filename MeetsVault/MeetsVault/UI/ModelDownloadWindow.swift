@@ -162,16 +162,7 @@ private struct ModelDownloadView: View {
                 .frame(minHeight: 56)
         }
         .frame(width: 520, height: 480)
-        .onAppear {
-            guard case .picking(let sel) = viewModel.phase else { return }
-            Task { @MainActor in
-                if ModelManager.shared.isDownloaded(sel) {
-                    viewModel.phase = .done(model: sel)
-                } else {
-                    viewModel.startDownload(sel)
-                }
-            }
-        }
+        .onAppear { }  // start in picking — user makes the active choice
     }
 
     // MARK: Model list

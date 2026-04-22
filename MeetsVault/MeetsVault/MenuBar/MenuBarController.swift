@@ -185,37 +185,20 @@ final class MenuBarController: AudioRecorderDelegate {
         let current = Settings.shared.selectedModelName
         let modelBlocked = recorder.state != .idle || isDownloadingModel
         let item = NSMenuItem(title: "Model: \(current)", action: nil, keyEquivalent: "")
-        item.isEnabled = !modelBlocked
         let sub = NSMenu()
         sub.autoenablesItems = false
-        for model in ModelManager.allModels {
-            let mi = NSMenuItem(
-                title: "\(model.name)  (\(model.displaySize))",
-                action: #selector(selectModel(_:)),
-                keyEquivalent: ""
-            )
-            mi.target = self
-            mi.representedObject = model.name
-            mi.isEnabled = !modelBlocked
-            if model.name == current { mi.state = .on }
-            sub.addItem(mi)
-        }
+        let switchItem = NSMenuItem(title: "Switch Model", action: #selector(openModelDownloadWindow), keyEquivalent: "")
+        switchItem.target = self
+        switchItem.isEnabled = !modelBlocked
+        sub.addItem(switchItem)
         item.submenu = sub
         return item
     }
 
-    @objc private func selectModel(_ sender: NSMenuItem) {
-        guard let name = sender.representedObject as? String else { return }
+    @objc private func openModelDownloadWindow() {
         guard recorder.state == .idle, !isDownloadingModel else { return }
-
-        if ModelManager.shared.isDownloaded(name) {
-            Settings.shared.selectedModelName = name
-            buildMenu()
-            return
-        }
-
         (NSApp.delegate as? AppDelegate)?.showModelDownloadWindow(
-            preselected: name,
+            preselected: Settings.shared.selectedModelName,
             onCommit: { [weak self] committed in
                 Settings.shared.selectedModelName = committed
                 self?.buildMenu()
