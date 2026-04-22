@@ -4,6 +4,7 @@ import Carbon
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBarController: MenuBarController?
     private var welcomeWindowController: WelcomeWindowController?
+    private var modelDownloadWindowController: ModelDownloadWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -19,6 +20,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         menuBarController = nil
+    }
+
+    // MARK: - Model Download
+
+    func showModelDownloadWindow(
+        preselected: String,
+        onCommit: @escaping (String) -> Void,
+        onCancel: @escaping () -> Void,
+        onDownloadStateChange: @escaping (Bool) -> Void
+    ) {
+        guard modelDownloadWindowController == nil else { return }
+        let wc = ModelDownloadWindowController(
+            preselected: preselected,
+            onCommit: { [weak self] committed in
+                onCommit(committed)
+                self?.modelDownloadWindowController?.closeWindow()
+                self?.modelDownloadWindowController = nil
+            },
+            onCancel: { [weak self] in
+                onCancel()
+                self?.modelDownloadWindowController = nil
+            },
+            onDownloadStateChange: onDownloadStateChange
+        )
+        wc.show()
+        modelDownloadWindowController = wc
     }
 
     // MARK: - Welcome

@@ -5,7 +5,7 @@ final class ModelManager {
 
     let modelsDir: URL = {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dir = appSupport.appendingPathComponent("MeetsVault/models")
+        let dir = appSupport.appendingPathComponent("MeetsVault")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }()
@@ -26,11 +26,18 @@ final class ModelManager {
 
     func download(_ name: String, progress: @escaping (Double) -> Void) async throws {
         let engine = WhisperKitEngine()
-        try await engine.prepare(modelName: name, progress: progress)
-        var models = Settings.shared.downloadedModels
-        if !models.contains(name) {
-            models.append(name)
-            Settings.shared.downloadedModels = models
+        do {
+            try await engine.prepare(modelName: name, progress: progress)
+            try Task.checkCancellation()
+            var models = Settings.shared.downloadedModels
+            if !models.contains(name) {
+                models.append(name)
+                Settings.shared.downloadedModels = models
+            }
+        } catch is CancellationError {
+            let partialDir = modelsDir.appendingPathComponent("argmaxinc/whisperkit-coreml/openai_whisper-\(name)")
+            try? FileManager.default.removeItem(at: partialDir)
+            throw CancellationError()
         }
     }
 }

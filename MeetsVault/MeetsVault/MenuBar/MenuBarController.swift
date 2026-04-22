@@ -17,6 +17,7 @@ final class MenuBarController: AudioRecorderDelegate {
     private let transcribingValues: [Double] = [1.0, 0.6, 0.2, 0.6]
     private var recordingStart: Date?
     private var aboutWindowController: AboutWindowController?
+    private var isDownloadingModel = false
 
     init() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -52,6 +53,7 @@ final class MenuBarController: AudioRecorderDelegate {
 
     func buildMenu() {
         let menu = NSMenu()
+        menu.autoenablesItems = false
 
         switch recorder.state {
         case .recording:
@@ -72,6 +74,7 @@ final class MenuBarController: AudioRecorderDelegate {
         case .idle:
             let startItem = NSMenuItem(title: "Start Recording", action: #selector(startRecording), keyEquivalent: "")
             startItem.target = self
+            startItem.isEnabled = !isDownloadingModel
             menu.addItem(startItem)
         }
 
@@ -92,7 +95,7 @@ final class MenuBarController: AudioRecorderDelegate {
 
         let reTranscribeItem = NSMenuItem(title: "Re-transcribe audio…", action: #selector(reTranscribeAudio), keyEquivalent: "")
         reTranscribeItem.target = self
-        reTranscribeItem.isEnabled = recorder.state == .idle
+        reTranscribeItem.isEnabled = recorder.state == .idle && !isDownloadingModel
         menu.addItem(reTranscribeItem)
 
         menu.addItem(.separator())
@@ -180,8 +183,11 @@ final class MenuBarController: AudioRecorderDelegate {
 
     private func makeModelSubmenu() -> NSMenuItem {
         let current = Settings.shared.selectedModelName
+        let modelBlocked = recorder.state != .idle || isDownloadingModel
         let item = NSMenuItem(title: "Model: \(current)", action: nil, keyEquivalent: "")
+        item.isEnabled = !modelBlocked
         let sub = NSMenu()
+        sub.autoenablesItems = false
         for model in ModelManager.allModels {
             let mi = NSMenuItem(
                 title: "\(model.name)  (\(model.displaySize))",
@@ -190,6 +196,7 @@ final class MenuBarController: AudioRecorderDelegate {
             )
             mi.target = self
             mi.representedObject = model.name
+            mi.isEnabled = !modelBlocked
             if model.name == current { mi.state = .on }
             sub.addItem(mi)
         }
@@ -199,23 +206,28 @@ final class MenuBarController: AudioRecorderDelegate {
 
     @objc private func selectModel(_ sender: NSMenuItem) {
         guard let name = sender.representedObject as? String else { return }
-        Settings.shared.selectedModelName = name
-        buildMenu()
-        if !ModelManager.shared.isDownloaded(name) {
-            downloadModel(name)
-        }
-    }
+        guard recorder.state == .idle, !isDownloadingModel else { return }
 
-    private func downloadModel(_ name: String) {
-        Task { [weak self] in
-            do {
-                try await ModelManager.shared.download(name) { _ in }
-                NSLog("[MeetsVault] Model downloaded: %@", name)
-            } catch {
-                os_log("Model download failed: %{public}@", log: log, type: .error, error.localizedDescription)
-                await MainActor.run { self?.showError("Model download failed: \(error.localizedDescription)") }
-            }
+        if ModelManager.shared.isDownloaded(name) {
+            Settings.shared.selectedModelName = name
+            buildMenu()
+            return
         }
+
+        (NSApp.delegate as? AppDelegate)?.showModelDownloadWindow(
+            preselected: name,
+            onCommit: { [weak self] committed in
+                Settings.shared.selectedModelName = committed
+                self?.buildMenu()
+            },
+            onCancel: { [weak self] in
+                self?.buildMenu()
+            },
+            onDownloadStateChange: { [weak self] downloading in
+                self?.isDownloadingModel = downloading
+                self?.buildMenu()
+            }
+        )
     }
 
     private func elapsedString() -> String {
