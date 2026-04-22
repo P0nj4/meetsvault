@@ -20,7 +20,7 @@ final class ModelManager {
 
     func isDownloaded(_ name: String) -> Bool {
         let variant = "openai_whisper-\(name)"
-        let modelDir = modelsDir.appendingPathComponent(variant)
+        let modelDir = modelsDir.appendingPathComponent("argmaxinc/whisperkit-coreml/\(variant)")
         return FileManager.default.fileExists(atPath: modelDir.path)
     }
 

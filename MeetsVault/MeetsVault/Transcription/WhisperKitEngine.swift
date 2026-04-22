@@ -6,7 +6,7 @@ final class WhisperKitEngine: TranscriptionEngine {
 
     private static let modelsDir: URL = {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dir = appSupport.appendingPathComponent("MeetsVault/models")
+        let dir = appSupport.appendingPathComponent("MeetsVault")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }()
@@ -25,7 +25,7 @@ final class WhisperKitEngine: TranscriptionEngine {
         )
 
         progress(0.85)
-        pipeline = try await WhisperKit(modelFolder: modelFolder.path())
+        pipeline = try await WhisperKit(modelFolder: modelFolder.path)
         progress(1.0)
     }
 
