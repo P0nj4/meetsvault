@@ -2,7 +2,7 @@
 
 A native macOS menu-bar app that records meetings and transcribes them locally using [WhisperKit](https://github.com/argmaxinc/WhisperKit). No cloud, no subscription, fully private.
 
-![macOS 15+](https://img.shields.io/badge/macOS-15%2B-blue) ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-required-lightgrey) ![License](https://img.shields.io/badge/license-PolyForm%20NC-green)
+![macOS 15+](https://img.shields.io/badge/macOS-15%2B-blue) ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-required-lightgrey) ![License](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)
 
 ---
 
@@ -139,4 +139,4 @@ Models are downloaded once and cached in `~/Library/Application Support/MeetsVau
 
 ## License
 
-[PolyForm Noncommercial License 1.0.0](LICENSE) — free to use and modify, commercial use not permitted.
+[MIT + Commons Clause](LICENSE) — free to use and modify (including commercially), but you may not sell it or offer it as a paid product or service.
