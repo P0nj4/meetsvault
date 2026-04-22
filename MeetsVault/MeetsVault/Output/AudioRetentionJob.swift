@@ -2,7 +2,7 @@ import Foundation
 
 enum AudioRetentionJob {
     static func run() {
-        let meetingsDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        let meetingsDir = Settings.shared.meetingsDirectory
         guard let items = try? FileManager.default.contentsOfDirectory(
             at: meetingsDir,
             includingPropertiesForKeys: [.contentModificationDateKey],

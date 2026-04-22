@@ -248,7 +248,7 @@ final class MenuBarController: AudioRecorderDelegate {
     }
 
     @objc private func openMeetingsFolder() {
-        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        let url = Settings.shared.meetingsDirectory
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         NSWorkspace.shared.open(url)
     }
@@ -257,7 +257,7 @@ final class MenuBarController: AudioRecorderDelegate {
         let panel = NSOpenPanel()
         panel.title = "Select a WAV file to re-transcribe"
         panel.allowedContentTypes = [.wav]
-        panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        panel.directoryURL = Settings.shared.meetingsDirectory
         guard panel.runModal() == .OK, let wavURL = panel.url else { return }
         Task { [weak self] in
             guard let self else { return }

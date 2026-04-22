@@ -10,7 +10,7 @@ enum TranscriptWriter {
         segments: [TranscriptSegment],
         combinedAudioURL: URL
     ) throws -> URL {
-        let meetingsDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+        let meetingsDir = Settings.shared.meetingsDirectory
         try FileManager.default.createDirectory(at: meetingsDir, withIntermediateDirectories: true)
 
         let baseName = FilenameBuilder.build(title: title, date: startedAt)
@@ -78,12 +78,7 @@ enum TranscriptWriter {
             md += "[\(ts)] \(seg.text)\n"
         }
 
-        md += """
-
-        ## Notes
-
-        <!-- your notes here -->
-        """
+        md = md.trimmingCharacters(in: .newlines)
 
         return md
     }

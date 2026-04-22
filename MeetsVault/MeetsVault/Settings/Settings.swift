@@ -9,6 +9,7 @@ final class Settings {
         static let selectedModelName = "selectedModelName"
         static let transcriptionLanguage = "transcriptionLanguage"
         static let downloadedModels = "downloadedModels"
+        static let meetingsDirectoryPath = "meetingsDirectoryPath"
     }
 
     var hasCompletedOnboarding: Bool {
@@ -29,5 +30,18 @@ final class Settings {
     var downloadedModels: [String] {
         get { defaults.stringArray(forKey: Key.downloadedModels) ?? [] }
         set { defaults.set(newValue, forKey: Key.downloadedModels) }
+    }
+
+    static let defaultMeetingsDirectory: URL =
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Meetings")
+
+    var meetingsDirectory: URL {
+        get {
+            if let path = defaults.string(forKey: Key.meetingsDirectoryPath) {
+                return URL(fileURLWithPath: path)
+            }
+            return Settings.defaultMeetingsDirectory
+        }
+        set { defaults.set(newValue.path, forKey: Key.meetingsDirectoryPath) }
     }
 }

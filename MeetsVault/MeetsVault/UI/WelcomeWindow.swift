@@ -36,6 +36,7 @@ private struct WelcomeView: View {
 
     @State private var step = 0
     @State private var selectedModel = Settings.shared.selectedModelName
+    @State private var meetingsDir = Settings.shared.meetingsDirectory
     @State private var isDownloading = false
     @State private var downloadProgress: Double = 0
     @State private var downloadError: String?
@@ -65,8 +66,9 @@ private struct WelcomeView: View {
         switch step {
         case 0: welcomeStep
         case 1: modelPickerStep
-        case 2: permissionsStep
-        case 3: downloadStep
+        case 2: folderPickerStep
+        case 3: permissionsStep
+        case 4: downloadStep
         default: doneStep
         }
     }
@@ -113,6 +115,54 @@ private struct WelcomeView: View {
             }
         }
         .padding(32)
+    }
+
+    private var folderPickerStep: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Where to Save Recordings")
+                .font(.title2.bold())
+            Text("Transcripts and audio files will be saved here. You can change this later from the menu bar.")
+                .foregroundColor(.secondary)
+            Divider()
+            HStack(spacing: 12) {
+                Image(systemName: "folder.fill")
+                    .foregroundColor(.accentColor)
+                Text(displayPath(meetingsDir))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundColor(.primary)
+                Spacer()
+                Button("Choose…") { pickFolder() }
+            }
+            .padding(12)
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(8)
+            if meetingsDir == Settings.defaultMeetingsDirectory {
+                Text("Default location: ~/Meetings")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(32)
+    }
+
+    private func displayPath(_ url: URL) -> String {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let path = url.path
+        return path.hasPrefix(home) ? "~" + path.dropFirst(home.count) : path
+    }
+
+    private func pickFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.prompt = "Select Folder"
+        panel.message = "Choose where MeetsVault saves transcripts and audio."
+        panel.directoryURL = meetingsDir
+        if panel.runModal() == .OK, let url = panel.url {
+            meetingsDir = url
+        }
     }
 
     private var permissionsStep: some View {
@@ -227,14 +277,14 @@ private struct WelcomeView: View {
     @ViewBuilder
     private var navigationButtons: some View {
         switch step {
-        case 0, 1, 2:
-            Button(step == 2 ? "Download Model" : "Next") {
+        case 0, 1, 2, 3:
+            Button(step == 3 ? "Download Model" : "Next") {
                 advanceStep()
             }
             .buttonStyle(.borderedProminent)
             .keyboardShortcut(.defaultAction)
 
-        case 3:
+        case 4:
             if downloadError != nil {
                 Button("Retry") {
                     downloadError = nil
@@ -246,6 +296,7 @@ private struct WelcomeView: View {
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
             } else {
+                // downloading — button disabled
                 Button("Next") {}
                     .buttonStyle(.borderedProminent)
                     .disabled(true)
@@ -262,8 +313,14 @@ private struct WelcomeView: View {
     }
 
     private func advanceStep() {
-        if step == 1 {
+        switch step {
+        case 1:
             Settings.shared.selectedModelName = selectedModel
+        case 2:
+            Settings.shared.meetingsDirectory = meetingsDir
+            try? FileManager.default.createDirectory(at: meetingsDir, withIntermediateDirectories: true)
+        default:
+            break
         }
         step += 1
     }
