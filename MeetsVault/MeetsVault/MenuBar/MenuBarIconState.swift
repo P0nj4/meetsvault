@@ -9,7 +9,7 @@ enum MenuBarIconState {
         switch self {
         case .idle: return "waveform"
         case .recording: return "record.circle.fill"
-        case .transcribing: return "waveform.badge.magnifyingglass"
+        case .transcribing: return "waveform"
         }
     }
 
