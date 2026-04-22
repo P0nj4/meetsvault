@@ -43,6 +43,20 @@ final class NotificationManager: NSObject {
         UNUserNotificationCenter.current().add(request)
     }
 
+    func postRecordingReminder() {
+        requestAuthorizationIfNeeded()
+        let content = UNMutableNotificationContent()
+        content.title = "Recording still in progress"
+        content.body = "MeetsVault is still recording. Don't forget to stop it."
+        content.sound = .default
+        let request = UNNotificationRequest(
+            identifier: "recording-reminder",
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
     func postInfo(_ title: String, body: String = "") {
         let content = UNMutableNotificationContent()
         content.title = title

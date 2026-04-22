@@ -11,6 +11,7 @@ final class MenuBarController: AudioRecorderDelegate {
         didSet { updateIcon() }
     }
     private var recordingTimer: Timer?
+    private var recordingReminderTimer: Timer?
     private var transcribingTimer: Timer?
     private var transcribingFrame = 0
     private let transcribingValues: [Double] = [1.0, 0.6, 0.2, 0.6]
@@ -26,6 +27,7 @@ final class MenuBarController: AudioRecorderDelegate {
 
     deinit {
         recordingTimer?.invalidate()
+        recordingReminderTimer?.invalidate()
         transcribingTimer?.invalidate()
         NSStatusBar.system.removeStatusItem(statusItem)
     }
@@ -322,6 +324,8 @@ final class MenuBarController: AudioRecorderDelegate {
         case .idle:
             recordingTimer?.invalidate()
             recordingTimer = nil
+            recordingReminderTimer?.invalidate()
+            recordingReminderTimer = nil
             transcribingTimer?.invalidate()
             transcribingTimer = nil
             transcribingFrame = 0
@@ -333,9 +337,14 @@ final class MenuBarController: AudioRecorderDelegate {
             recordingTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
                 self?.buildMenu()
             }
+            recordingReminderTimer = Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { _ in
+                NotificationManager.shared.postRecordingReminder()
+            }
         case .transcribing:
             recordingTimer?.invalidate()
             recordingTimer = nil
+            recordingReminderTimer?.invalidate()
+            recordingReminderTimer = nil
             iconState = .transcribing
             transcribingTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
                 guard let self else { return }
