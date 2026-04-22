@@ -33,6 +33,7 @@ final class ModelDownloadWindowController: NSWindowController, NSWindowDelegate 
         vm.onCommitRequest = { [weak self] name in
             self?.committed = true
             onCommit(name)
+            self?.closeWindow()
         }
     }
 
@@ -63,6 +64,7 @@ final class ModelDownloadWindowController: NSWindowController, NSWindowDelegate 
 final class ModelDownloadModel: ObservableObject {
     enum Phase {
         case picking(selection: String)
+        case confirming(model: String)
         case downloading(model: String, progress: Double)
         case done(model: String)
         case failed(model: String, error: String)
@@ -81,12 +83,22 @@ final class ModelDownloadModel: ObservableObject {
 
     @MainActor
     func selectOrDownload(_ name: String) {
-        guard case .picking = phase else { return }
-        if ModelManager.shared.isDownloaded(name) {
-            phase = .done(model: name)
-        } else {
-            startDownload(name)
+        switch phase {
+        case .picking, .confirming:
+            if ModelManager.shared.isDownloaded(name) {
+                phase = .done(model: name)
+            } else {
+                phase = .confirming(model: name)
+            }
+        default:
+            break
         }
+    }
+
+    @MainActor
+    func confirmDownload() {
+        guard case .confirming(let name) = phase else { return }
+        startDownload(name)
     }
 
     @MainActor
@@ -151,21 +163,57 @@ private struct ModelDownloadView: View {
     @ObservedObject var viewModel: ModelDownloadModel
 
     var body: some View {
+        Group {
+            if case .done(let name) = viewModel.phase {
+                doneScreen(model: name)
+            } else {
+                listLayout
+            }
+        }
+        .frame(width: 520, height: 480)
+    }
+
+    // MARK: Done screen
+
+    private func doneScreen(model: String) -> some View {
+        VStack(spacing: 0) {
+            Spacer()
+            VStack(spacing: 20) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 64))
+                    .foregroundColor(.green)
+                Text("Model changed!")
+                    .font(.title.bold())
+                Text("\(model) is now your transcription model.")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+            }
+            .padding(40)
+            Spacer()
+            Divider()
+            HStack {
+                Spacer()
+                Button("Done") { viewModel.commit(model) }
+                    .buttonStyle(.borderedProminent)
+                    .tint(brandColor)
+                    .keyboardShortcut(.defaultAction)
+            }
+            .padding(20)
+        }
+    }
+
+    // MARK: List layout
+
+    private var listLayout: some View {
         VStack(spacing: 0) {
             modelList
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
             Divider()
-
             bottomArea
                 .padding(20)
-                .frame(minHeight: 56)
+                .frame(minHeight: 80)
         }
-        .frame(width: 520, height: 480)
-        .onAppear { }  // start in picking — user makes the active choice
     }
-
-    // MARK: Model list
 
     private var modelList: some View {
         ScrollView {
@@ -178,30 +226,38 @@ private struct ModelDownloadView: View {
                     modelRow(model)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            if case .picking = viewModel.phase {
-                                Task { @MainActor in
-                                    viewModel.selectOrDownload(model.name)
-                                }
+                            switch viewModel.phase {
+                            case .picking, .confirming:
+                                Task { @MainActor in viewModel.selectOrDownload(model.name) }
+                            default:
+                                break
                             }
                         }
-                        .opacity(rowEnabled ? 1.0 : (isCurrentlySelected(model.name) ? 1.0 : 0.5))
+                        .opacity(rowOpacity(for: model.name))
                 }
             }
             .padding(32)
         }
     }
 
-    private var rowEnabled: Bool {
-        if case .picking = viewModel.phase { return true }
-        return false
+    private func rowOpacity(for name: String) -> Double {
+        switch viewModel.phase {
+        case .picking, .confirming:
+            return 1.0
+        case .downloading, .failed:
+            return isCurrentlySelected(name) ? 1.0 : 0.4
+        default:
+            return 1.0
+        }
     }
 
     private func isCurrentlySelected(_ name: String) -> Bool {
         switch viewModel.phase {
-        case .picking(let sel): return sel == name
+        case .picking(let sel):    return sel == name
+        case .confirming(let m):   return m == name
         case .downloading(let m, _): return m == name
-        case .done(let m): return m == name
-        case .failed(let m, _): return m == name
+        case .failed(let m, _):    return m == name
+        case .done(let m):         return m == name
         }
     }
 
@@ -238,32 +294,19 @@ private struct ModelDownloadView: View {
 
     @ViewBuilder
     private func selectionIndicator(for name: String) -> some View {
-        let isSelected = isCurrentlySelected(name)
-        switch viewModel.phase {
-        case .picking:
-            if isSelected {
+        if isCurrentlySelected(name) {
+            switch viewModel.phase {
+            case .picking, .confirming:
                 Image(systemName: "checkmark.circle.fill").foregroundColor(brandColor)
-            } else {
-                Color.clear.frame(width: 16, height: 16)
-            }
-        case .downloading(_, _):
-            if isSelected {
+            case .downloading:
                 Image(systemName: "arrow.down.circle.fill").foregroundColor(brandColor)
-            } else {
-                Color.clear.frame(width: 16, height: 16)
-            }
-        case .done(_):
-            if isSelected {
-                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-            } else {
-                Color.clear.frame(width: 16, height: 16)
-            }
-        case .failed(_, _):
-            if isSelected {
+            case .failed:
                 Image(systemName: "exclamationmark.circle.fill").foregroundColor(.orange)
-            } else {
-                Color.clear.frame(width: 16, height: 16)
+            case .done:
+                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
             }
+        } else {
+            Color.clear.frame(width: 16, height: 16)
         }
     }
 
@@ -275,8 +318,21 @@ private struct ModelDownloadView: View {
         case .picking:
             EmptyView()
 
+        case .confirming(let name):
+            HStack {
+                Text("Tap Change to switch to \(name).")
+                    .foregroundColor(.secondary)
+                Spacer()
+                Button("Change") {
+                    Task { @MainActor in viewModel.confirmDownload() }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(brandColor)
+                .keyboardShortcut(.defaultAction)
+            }
+
         case .downloading(let name, let progress):
-            VStack(spacing: 8) {
+            VStack(spacing: 10) {
                 HStack {
                     Text("Downloading \(name)…")
                         .font(.callout)
@@ -287,6 +343,13 @@ private struct ModelDownloadView: View {
                 }
                 ProgressView(value: progress > 0 ? progress : nil)
                     .progressViewStyle(.linear)
+                HStack {
+                    Spacer()
+                    Button("Change") { }
+                        .buttonStyle(.borderedProminent)
+                        .tint(brandColor)
+                        .disabled(true)
+                }
             }
 
         case .failed(let name, let error):
@@ -303,18 +366,8 @@ private struct ModelDownloadView: View {
                 .tint(brandColor)
             }
 
-        case .done(let name):
-            HStack {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-                Text("\(name) is ready")
-                    .fontWeight(.semibold)
-                Spacer()
-                Button("Done") { viewModel.commit(name) }
-                    .buttonStyle(.borderedProminent)
-                    .tint(brandColor)
-                    .keyboardShortcut(.defaultAction)
-            }
+        case .done:
+            EmptyView()
         }
     }
 }
