@@ -60,3 +60,16 @@ targets:
       base:
         INFOPLIST_FILE: MeetsVault/Info.plist
         CODE_SIGN_ENTITLEMENTS: MeetsVault/MeetsVault.entitlements
+
+  MeetsVaultTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: MeetsVaultTests
+    dependencies:
+      - target: MeetsVault
+    settings:
+      base:
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MeetsVault.app/Contents/MacOS/MeetsVault"
+        GENERATE_INFOPLIST_FILE: YES

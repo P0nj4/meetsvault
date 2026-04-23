@@ -37,7 +37,7 @@ enum TranscriptWriter {
         return mdURL
     }
 
-    private static func buildMarkdown(
+    static func buildMarkdown(
         title: String,
         startedAt: Date,
         endedAt: Date,
@@ -84,12 +84,12 @@ enum TranscriptWriter {
         return md
     }
 
-    private static func formatTimestamp(_ seconds: Double) -> String {
+    static func formatTimestamp(_ seconds: Double) -> String {
         let s = Int(seconds)
         return String(format: "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60)
     }
 
-    private static func formatDuration(_ seconds: TimeInterval) -> String {
+    static func formatDuration(_ seconds: TimeInterval) -> String {
         let s = Int(seconds)
         return String(format: "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60)
     }
