@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         _ = NotificationManager.shared  // initialize delegate early
+        NotificationManager.shared.requestAuthorizationIfNeeded()
         registerURLSchemeHandler()
         menuBarController = MenuBarController()
         AudioRetentionJob.run()

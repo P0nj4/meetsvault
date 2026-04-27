@@ -29,6 +29,24 @@ final class Settings {
         }
     }
 
+    private static var termsFlagURL: URL {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        return appSupport.appendingPathComponent("MeetsVault/terms_accepted_v\(Terms.version)")
+    }
+
+    var hasAcceptedTerms: Bool {
+        get { FileManager.default.fileExists(atPath: Self.termsFlagURL.path) }
+        set {
+            if newValue {
+                let dir = Self.termsFlagURL.deletingLastPathComponent()
+                try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+                FileManager.default.createFile(atPath: Self.termsFlagURL.path, contents: nil)
+            } else {
+                try? FileManager.default.removeItem(at: Self.termsFlagURL)
+            }
+        }
+    }
+
     var selectedModelName: String {
         get { defaults.string(forKey: Key.selectedModelName) ?? "small" }
         set { defaults.set(newValue, forKey: Key.selectedModelName) }

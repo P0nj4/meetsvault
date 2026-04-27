@@ -37,6 +37,7 @@ private struct WelcomeView: View {
     let onFinish: () -> Void
 
     @State private var step = 0
+    @State private var termsAccepted = Settings.shared.hasAcceptedTerms
     @State private var selectedModel = Settings.shared.selectedModelName
     @State private var meetingsDir = Settings.shared.meetingsDirectory
     @State private var isDownloading = false
@@ -67,12 +68,49 @@ private struct WelcomeView: View {
     private var stepView: some View {
         switch step {
         case 0: welcomeStep
-        case 1: modelPickerStep
-        case 2: folderPickerStep
-        case 3: permissionsStep
-        case 4: downloadStep
+        case 1: termsStep
+        case 2: modelPickerStep
+        case 3: folderPickerStep
+        case 4: permissionsStep
+        case 5: downloadStep
         default: doneStep
         }
+    }
+
+    private var termsStep: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Terms & Conditions")
+                .font(.title2.bold())
+            Text("Please read and accept before continuing. You are responsible for ensuring your use of MeetsVault complies with the law in your jurisdiction.")
+                .foregroundColor(.secondary)
+                .font(.callout)
+
+            ScrollView {
+                Text(Terms.text)
+                    .font(.system(size: 11))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(8)
+                    .textSelection(.enabled)
+            }
+            .frame(maxHeight: .infinity)
+            .background(Color(NSColor.textBackgroundColor))
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+            )
+
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
+                    .font(.system(size: 18))
+                    .foregroundColor(termsAccepted ? brandColor : .secondary)
+                Text("I have read and agree to the Terms & Conditions, and accept full responsibility for lawful use of MeetsVault.")
+                    .font(.callout)
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { termsAccepted.toggle() }
+        }
+        .padding(24)
     }
 
     private var welcomeStep: some View {
@@ -307,15 +345,16 @@ private struct WelcomeView: View {
     @ViewBuilder
     private var navigationButtons: some View {
         switch step {
-        case 0, 1, 2, 3:
-            Button(step == 3 ? "Download Model" : "Next") {
+        case 0, 1, 2, 3, 4:
+            Button(step == 4 ? "Download Model" : "Next") {
                 advanceStep()
             }
             .buttonStyle(.borderedProminent)
             .tint(brandColor)
             .keyboardShortcut(.defaultAction)
+            .disabled(step == 1 && !termsAccepted)
 
-        case 4:
+        case 5:
             if downloadError != nil {
                 Button("Retry") {
                     downloadError = nil
@@ -350,8 +389,10 @@ private struct WelcomeView: View {
     private func advanceStep() {
         switch step {
         case 1:
-            Settings.shared.selectedModelName = selectedModel
+            Settings.shared.hasAcceptedTerms = true
         case 2:
+            Settings.shared.selectedModelName = selectedModel
+        case 3:
             Settings.shared.meetingsDirectory = meetingsDir
             try? FileManager.default.createDirectory(at: meetingsDir, withIntermediateDirectories: true)
         default:

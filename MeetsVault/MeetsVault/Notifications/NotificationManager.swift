@@ -54,7 +54,9 @@ final class NotificationManager: NSObject {
             content: content,
             trigger: nil
         )
-        UNUserNotificationCenter.current().add(request)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error { NSLog("[MeetsVault] Reminder notification error: %@", error.localizedDescription) }
+        }
     }
 
     func postInfo(_ title: String, body: String = "") {

@@ -17,6 +17,7 @@ final class MenuBarController: AudioRecorderDelegate {
     private let transcribingValues: [Double] = [1.0, 0.6, 0.2, 0.6]
     private var recordingStart: Date?
     private var aboutWindowController: AboutWindowController?
+    private var termsWindowController: TermsWindowController?
     private var modelDownloadWindowController: ModelDownloadWindowController?
     private var isDownloadingModel = false
 
@@ -104,6 +105,10 @@ final class MenuBarController: AudioRecorderDelegate {
         let aboutItem = NSMenuItem(title: "About MeetsVault", action: #selector(showAbout), keyEquivalent: "")
         aboutItem.target = self
         menu.addItem(aboutItem)
+
+        let termsItem = NSMenuItem(title: "Terms & Conditions", action: #selector(showTerms), keyEquivalent: "")
+        termsItem.target = self
+        menu.addItem(termsItem)
 
         let quitItem = NSMenuItem(title: "Quit MeetsVault", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quitItem)
@@ -319,6 +324,13 @@ final class MenuBarController: AudioRecorderDelegate {
             aboutWindowController = AboutWindowController()
         }
         aboutWindowController?.show()
+    }
+
+    @objc private func showTerms() {
+        if termsWindowController == nil {
+            termsWindowController = TermsWindowController()
+        }
+        termsWindowController?.show()
     }
 
     // MARK: - AudioRecorderDelegate
