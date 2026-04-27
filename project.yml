@@ -66,7 +66,6 @@ targets:
           BUILD_NUM=$(date +%Y%m%d%H%M)
           PLIST="${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUM" "$PLIST"
-          # Re-sign because we mutated the bundle after Xcode signed it.
           IDENTITY="${EXPANDED_CODE_SIGN_IDENTITY:--}"
           ENTITLEMENTS_ARG=""
           if [ -n "${CODE_SIGN_ENTITLEMENTS:-}" ] && [ -f "${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}" ]; then
@@ -74,7 +73,14 @@ targets:
           fi
           /usr/bin/codesign --force --sign "$IDENTITY" -o runtime $ENTITLEMENTS_ARG "${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
           echo "Stamped CFBundleVersion = $BUILD_NUM and re-signed"
+        # Declare the bundle Info.plist as input so Xcode orders this script
+        # after ProcessInfoPlistFile, not before it.
+        inputFiles:
+          - $(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/_BuildStamp
         basedOnDependencyAnalysis: false
+        runOnlyWhenInstalling: false
 
   MeetsVaultTests:
     type: bundle.unit-test

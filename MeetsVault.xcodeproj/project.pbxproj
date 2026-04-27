@@ -354,15 +354,17 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "Stamp build number with date and re-sign";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/_BuildStamp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BUILD_NUM=$(date +%Y%m%d%H%M)\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUM\" \"$PLIST\"\n# Re-sign because we mutated the bundle after Xcode signed it.\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\nENTITLEMENTS_ARG=\"\"\nif [ -n \"${CODE_SIGN_ENTITLEMENTS:-}\" ] && [ -f \"${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\" ]; then\n  ENTITLEMENTS_ARG=\"--entitlements ${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\"\nfi\n/usr/bin/codesign --force --sign \"$IDENTITY\" -o runtime $ENTITLEMENTS_ARG \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\necho \"Stamped CFBundleVersion = $BUILD_NUM and re-signed\"\n";
+			shellScript = "BUILD_NUM=$(date +%Y%m%d%H%M)\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUM\" \"$PLIST\"\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\nENTITLEMENTS_ARG=\"\"\nif [ -n \"${CODE_SIGN_ENTITLEMENTS:-}\" ] && [ -f \"${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\" ]; then\n  ENTITLEMENTS_ARG=\"--entitlements ${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\"\nfi\n/usr/bin/codesign --force --sign \"$IDENTITY\" -o runtime $ENTITLEMENTS_ARG \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\necho \"Stamped CFBundleVersion = $BUILD_NUM and re-signed\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
