@@ -60,6 +60,21 @@ targets:
       base:
         INFOPLIST_FILE: MeetsVault/Info.plist
         CODE_SIGN_ENTITLEMENTS: MeetsVault/MeetsVault.entitlements
+    postBuildScripts:
+      - name: Stamp build number with date and re-sign
+        script: |
+          BUILD_NUM=$(date +%Y%m%d%H%M)
+          PLIST="${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUM" "$PLIST"
+          # Re-sign because we mutated the bundle after Xcode signed it.
+          IDENTITY="${EXPANDED_CODE_SIGN_IDENTITY:--}"
+          ENTITLEMENTS_ARG=""
+          if [ -n "${CODE_SIGN_ENTITLEMENTS:-}" ] && [ -f "${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}" ]; then
+            ENTITLEMENTS_ARG="--entitlements ${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}"
+          fi
+          /usr/bin/codesign --force --sign "$IDENTITY" -o runtime $ENTITLEMENTS_ARG "${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
+          echo "Stamped CFBundleVersion = $BUILD_NUM and re-signed"
+        basedOnDependencyAnalysis: false
 
   MeetsVaultTests:
     type: bundle.unit-test

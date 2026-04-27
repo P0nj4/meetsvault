@@ -27,7 +27,7 @@ private struct AboutView: View {
                 .foregroundColor(.accentColor)
             Text("MeetsVault")
                 .font(.title2.bold())
-            Text("Version \(appVersion)")
+            Text("Version \(appVersion) (build \(buildNumber))")
                 .foregroundColor(.secondary)
             Text("Local meeting transcription. No cloud, no cost.")
                 .multilineTextAlignment(.center)
@@ -43,5 +43,9 @@ private struct AboutView: View {
 
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    }
+
+    private var buildNumber: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
     }
 }

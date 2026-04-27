@@ -259,6 +259,7 @@
 				31A38B92D9F4EBDC97B234BD /* Sources */,
 				75E55D79FEE19CF536BA71EB /* Resources */,
 				7FF46501BC22706AD11587B5 /* Frameworks */,
+				D5E5FD2B1B70B4D888909EDF /* Stamp build number with date and re-sign */,
 			);
 			buildRules = (
 			);
@@ -342,6 +343,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D5E5FD2B1B70B4D888909EDF /* Stamp build number with date and re-sign */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Stamp build number with date and re-sign";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUILD_NUM=$(date +%Y%m%d%H%M)\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUM\" \"$PLIST\"\n# Re-sign because we mutated the bundle after Xcode signed it.\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\nENTITLEMENTS_ARG=\"\"\nif [ -n \"${CODE_SIGN_ENTITLEMENTS:-}\" ] && [ -f \"${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\" ]; then\n  ENTITLEMENTS_ARG=\"--entitlements ${SRCROOT}/${CODE_SIGN_ENTITLEMENTS}\"\nfi\n/usr/bin/codesign --force --sign \"$IDENTITY\" -o runtime $ENTITLEMENTS_ARG \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\necho \"Stamped CFBundleVersion = $BUILD_NUM and re-signed\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		31A38B92D9F4EBDC97B234BD /* Sources */ = {
