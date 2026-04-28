@@ -138,6 +138,50 @@ Models are downloaded once and cached in `~/Library/Application Support/MeetsVau
 
 ---
 
+## Automatic recording with Claude Code
+
+Because MeetsVault is controlled entirely through its URL scheme, you can wire it into a Claude Code scheduled agent that watches your calendar and starts recording automatically when a meeting begins.
+
+### Example flow
+
+```
+Every 30 min
+    └── Claude Code scheduled agent
+            └── reads macOS Calendar (e.g. via CheICalMCP)
+                    └── meeting starting within ±2 min?
+                            ├── YES → osascript prompt: "Start recording for <title>?"
+                            │             └── user confirms
+                            │                     └── open 'meetsvault://start?title=<title>'
+                            │                             └── MeetsVault begins recording
+                            └── NO  → nothing happens
+```
+
+### Building your own agent
+
+1. **Create a Claude Code skill** that checks your calendar for events starting soon. The skill should call an MCP server that reads local calendar data (e.g. [CheICalMCP](https://github.com/che-incubator/che-ical-mcp)) and filter for the meeting type you care about (Teams, Zoom, Google Meet, etc.).
+
+2. **Prompt before recording** — show a native confirmation dialog so nothing starts without your say-so:
+   ```bash
+   osascript -e 'display dialog "Start recording for \"My Meeting\"?" buttons {"Skip", "Start Recording"} default button "Start Recording"'
+   ```
+
+3. **Trigger MeetsVault** on confirmation:
+   ```bash
+   open 'meetsvault://start?title=My%20Meeting'
+   ```
+
+4. **Schedule the skill** in Claude Code to run every 30 minutes:
+   ```
+   /schedule every 30 minutes run <your-skill-name>
+   ```
+
+Stop recording when the meeting ends with:
+```bash
+open 'meetsvault://stop'
+```
+
+---
+
 ## License
 
 [MIT + Commons Clause](LICENSE) — free to use and modify (including commercially), but you may not sell it or offer it as a paid product or service.
