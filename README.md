@@ -4,6 +4,8 @@ A native macOS menu-bar app that records meetings and transcribes them locally u
 
 ![macOS 15+](https://img.shields.io/badge/macOS-15%2B-blue) ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-required-lightgrey) ![License](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)
 
+**[User Manual](docs/USER_MANUAL.md)** · [Manual en Español](docs/USER_MANUAL.es.md)
+
 ---
 
 ## Features
