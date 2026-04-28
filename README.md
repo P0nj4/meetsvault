@@ -53,10 +53,11 @@ Drag it to `/Applications`. On first launch, right-click → **Open** to bypass 
 
 The onboarding walks you through:
 
-1. Choosing a Whisper model (default: `small` — good balance of speed and accuracy)
-2. Choosing where to save transcripts and audio (default: `~/Meetings`)
-3. Granting Microphone and Screen Recording permissions
-4. Downloading the selected model (~466 MB for `small`)
+1. Accepting the Terms & Conditions
+2. Choosing a Whisper model (default: `small` — good balance of speed and accuracy)
+3. Choosing where to save transcripts and audio (default: `~/Meetings`)
+4. Granting Microphone and Screen Recording permissions
+5. Downloading the selected model (~466 MB for `small`)
 
 After setup, MeetsVault lives in your menu bar as a waveform icon.
 

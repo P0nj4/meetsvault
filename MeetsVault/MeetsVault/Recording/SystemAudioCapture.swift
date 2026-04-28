@@ -6,8 +6,10 @@ final class SystemAudioCapture: NSObject {
     private var audioFile: AVAudioFile?
     private let targetFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 16000, channels: 1, interleaved: true)!
     private var converter: AVAudioConverter?
+    private(set) var firstSampleTime: Date?
 
     func start(to url: URL) async throws {
+        firstSampleTime = nil
         let content = try await SCShareableContent.current
         guard let display = content.displays.first else {
             throw CaptureError.noDisplayFound
@@ -52,6 +54,9 @@ extension SystemAudioCapture: SCStreamOutput {
     func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
         guard type == .audio else { return }
         guard let converter, let audioFile else { return }
+        if firstSampleTime == nil {
+            firstSampleTime = Date()
+        }
 
         guard let formatDescription = sampleBuffer.formatDescription else { return }
 

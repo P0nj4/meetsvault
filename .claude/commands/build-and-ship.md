@@ -1,4 +1,4 @@
-Build MeetsVault, zip the app bundle, and copy it to the Desktop (replacing any existing zip).
+Build MeetsVault, zip the app bundle with a timestamped filename, and copy it to iCloud Documents.
 
 ```bash
 set -e
@@ -18,13 +18,17 @@ if [ ! -d "$APP_PATH" ]; then
   exit 1
 fi
 
-echo "Zipping..."
+STAMP=$(date +%Y-%m-%d_%H-%M-%S)
+ZIP_NAME="MeetsVault_${STAMP}.zip"
+DEST_DIR="/Users/german/Library/Mobile Documents/com~apple~CloudDocs/Documents"
+
+echo "Zipping as ${ZIP_NAME}..."
 cd build/Build/Products/Release
-zip -r MeetsVault.zip MeetsVault.app
+zip -r "${ZIP_NAME}" MeetsVault.app
 cd -
 
-echo "Copying to Desktop..."
-cp -f build/Build/Products/Release/MeetsVault.zip ~/Desktop/MeetsVault.zip
+echo "Copying to iCloud Documents..."
+cp -f "build/Build/Products/Release/${ZIP_NAME}" "${DEST_DIR}/${ZIP_NAME}"
 
-echo "Done: ~/Desktop/MeetsVault.zip"
+echo "Done: ${DEST_DIR}/${ZIP_NAME}"
 ```

@@ -102,7 +102,20 @@ final class AudioRecorder {
             let lang = language.isEmpty ? nil : language
             let micSegments = try await engine.transcribe(audioURL: micURL, language: lang, speaker: .you)
             let systemSegments = try await engine.transcribe(audioURL: systemURL, language: lang, speaker: .others)
-            let segments = (micSegments + systemSegments).sorted { $0.startSeconds < $1.startSeconds }
+
+            let micFirst = micCapture.firstSampleTime
+            let systemFirst = systemCapture.firstSampleTime
+            let anchor: Date? = [micFirst, systemFirst].compactMap { $0 }.min()
+            let micOffset = (micFirst != nil && anchor != nil) ? micFirst!.timeIntervalSince(anchor!) : 0
+            let systemOffset = (systemFirst != nil && anchor != nil) ? systemFirst!.timeIntervalSince(anchor!) : 0
+            NSLog("[MeetsVault] Stream offsets — mic: %.3fs, system: %.3fs", micOffset, systemOffset)
+
+            let alignedMic = micSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + micOffset, endSeconds: $0.endSeconds + micOffset, text: $0.text, speaker: $0.speaker) }
+            let alignedSystem = systemSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + systemOffset, endSeconds: $0.endSeconds + systemOffset, text: $0.text, speaker: $0.speaker) }
+
+            let segments = TranscriptDeduplicator.dedupe(mic: alignedMic, system: alignedSystem)
+            NSLog("[MeetsVault] After dedup: %d mic + %d system → %d segments",
+                  alignedMic.count, alignedSystem.count, segments.count)
             for seg in segments {
                 NSLog("[MeetsVault] [%@] %@", Self.formatTime(seg.startSeconds), seg.text)
             }

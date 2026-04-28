@@ -4,8 +4,10 @@ final class MicrophoneCapture {
     private let engine = AVAudioEngine()
     private var audioFile: AVAudioFile?
     private let targetFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 16000, channels: 1, interleaved: true)!
+    private(set) var firstSampleTime: Date?
 
     func start(to url: URL) throws {
+        firstSampleTime = nil
         let inputNode = engine.inputNode
         let inputFormat = inputNode.outputFormat(forBus: 0)
 
@@ -17,6 +19,9 @@ final class MicrophoneCapture {
 
         inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) { [weak self] buffer, _ in
             guard let self, let file = self.audioFile else { return }
+            if self.firstSampleTime == nil {
+                self.firstSampleTime = Date()
+            }
             let frameCapacity = AVAudioFrameCount(Double(buffer.frameLength) * self.targetFormat.sampleRate / inputFormat.sampleRate)
             guard let converted = AVAudioPCMBuffer(pcmFormat: self.targetFormat, frameCapacity: frameCapacity) else { return }
 
@@ -46,4 +51,3 @@ final class MicrophoneCapture {
         audioFile = nil
     }
 }
-

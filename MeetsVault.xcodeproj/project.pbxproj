@@ -25,11 +25,13 @@
 		7666A27E9AE2DFFCA52C9672 /* AboutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435DF182509402CA3B5199E4 /* AboutWindow.swift */; };
 		7EE8E737FB8A1136D7344588 /* MicrophoneCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC18FE369DD26F5E1E961877 /* MicrophoneCapture.swift */; };
 		814FEE3E291614D845B0612C /* URLSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */; };
+		8846108125F163B56451D159 /* TranscriptDeduplicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */; };
 		9559D58701302BEE2AB8DB8A /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E56D0295B9A43DDD92B9F86A /* NotificationManager.swift */; };
 		970A0502EDDF313450C0056B /* ModelDownloadWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EBDB53CAE97325582CB72B /* ModelDownloadWindow.swift */; };
 		A300C943628011CAC5089429 /* AudioRetentionJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF559BF6848058076AE7247A /* AudioRetentionJob.swift */; };
 		A5B78E68588B08C6C0F80BBD /* TranscriptSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEA4C25517B4A0C5E9A2A17 /* TranscriptSegment.swift */; };
 		B060E6043227E5D9F08C25CB /* TranscriptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B37CA1BD167F859DCEBB2D /* TranscriptionEngine.swift */; };
+		B07CFDBB2F93940356F98DA2 /* TranscriptDeduplicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6581085C479DF12D2E29A2 /* TranscriptDeduplicator.swift */; };
 		BC3511D423FFCE3BC308B6BE /* MeetsVaultApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */; };
 		BEC80304515C90B753A97A4C /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C2942545B3334C710A1837 /* WelcomeWindow.swift */; };
 		CA804E4EA241CC6496F6816C /* FilenameBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BE1C6BC953E865CA8917D5 /* FilenameBuilderTests.swift */; };
@@ -61,11 +63,13 @@
 		24A4CEA586A9310E64091332 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSchemeHandler.swift; sourceTree = "<group>"; };
 		34BE1C6BC953E865CA8917D5 /* FilenameBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameBuilderTests.swift; sourceTree = "<group>"; };
+		3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptDeduplicatorTests.swift; sourceTree = "<group>"; };
 		435DF182509402CA3B5199E4 /* AboutWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutWindow.swift; sourceTree = "<group>"; };
 		4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4D3E14A64048BAFF976D4E40 /* FilenameBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameBuilder.swift; sourceTree = "<group>"; };
 		4F300998105A4A9668DDCB0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		728F99AB06D86443491EE1F6 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
+		7C6581085C479DF12D2E29A2 /* TranscriptDeduplicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptDeduplicator.swift; sourceTree = "<group>"; };
 		9E299E5A31AC5EA90DC9C0B9 /* SystemAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemAudioCapture.swift; sourceTree = "<group>"; };
 		A592CEB2F35DF39649D3A594 /* MeetsVault.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetsVault.entitlements; sourceTree = "<group>"; };
 		A6CC503FC331F1230FBFD169 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
@@ -118,6 +122,7 @@
 			children = (
 				A6CC503FC331F1230FBFD169 /* ModelManager.swift */,
 				E66345DF0D004B520EBB62C9 /* TranscriptCleaner.swift */,
+				7C6581085C479DF12D2E29A2 /* TranscriptDeduplicator.swift */,
 				E1B37CA1BD167F859DCEBB2D /* TranscriptionEngine.swift */,
 				0BEA4C25517B4A0C5E9A2A17 /* TranscriptSegment.swift */,
 				F450DE0C8F07952BB63BC325 /* WhisperKitEngine.swift */,
@@ -170,6 +175,7 @@
 				34BE1C6BC953E865CA8917D5 /* FilenameBuilderTests.swift */,
 				200F2A306CCB1E2085FA370C /* LanguageCodeTests.swift */,
 				B27F6C20A3C9B6279EC8A9E2 /* TranscriptCleanerTests.swift */,
+				3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */,
 				E1FDCA5BF1AE3FEC7DFE4C8A /* TranscriptWriterTests.swift */,
 			);
 			path = MeetsVaultTests;
@@ -394,6 +400,7 @@
 				DFD513A6AD3BE3DC262AD6F7 /* Terms.swift in Sources */,
 				DD5FBFFFBF85AAD7ADEC81CD /* TermsWindow.swift in Sources */,
 				E742E852654C04D44F02CE9E /* TranscriptCleaner.swift in Sources */,
+				B07CFDBB2F93940356F98DA2 /* TranscriptDeduplicator.swift in Sources */,
 				A5B78E68588B08C6C0F80BBD /* TranscriptSegment.swift in Sources */,
 				39FAE49AFD260532D3AAEA15 /* TranscriptWriter.swift in Sources */,
 				B060E6043227E5D9F08C25CB /* TranscriptionEngine.swift in Sources */,
@@ -410,6 +417,7 @@
 				CA804E4EA241CC6496F6816C /* FilenameBuilderTests.swift in Sources */,
 				70FA831783169536BA8486EB /* LanguageCodeTests.swift in Sources */,
 				41F79A757737EA48C645D679 /* TranscriptCleanerTests.swift in Sources */,
+				8846108125F163B56451D159 /* TranscriptDeduplicatorTests.swift in Sources */,
 				CFC80C8524B7D047D4E87DC7 /* TranscriptWriterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

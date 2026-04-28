@@ -25,7 +25,18 @@ xcodebuild -project MeetsVault.xcodeproj \
 
 Output: `build/Build/Products/Release/MeetsVault.app`
 
-There are no unit tests in this project.
+A `postBuildScripts` phase in `project.yml` stamps `CFBundleVersion` with `date +%Y%m%d%H%M` and re-signs the bundle. It runs after `ProcessInfoPlistFile` (declared via `inputFiles`).
+
+## Tests
+
+Unit tests live in `MeetsVaultTests/` (`FilenameBuilder`, `TranscriptCleaner`, `LanguageCode`, `TranscriptWriter`).
+
+```bash
+xcodebuild test \
+  -project MeetsVault.xcodeproj \
+  -scheme MeetsVault \
+  -destination "platform=macOS,arch=arm64"
+```
 
 ## Architecture
 
@@ -55,5 +66,6 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `transcriptionLanguage` — BCP-47 code (e.g. `"en"`)
 - `meetingsDirectoryPath` — absolute path string; defaults to `~/Meetings`
 - `hasCompletedOnboarding` — bool
+- `hasAcceptedTerms` — bool; gated on step 1 of `WelcomeWindow` before onboarding can proceed
 
 **Transcript format:** Markdown with YAML frontmatter (title, date, started_at, ended_at, duration, language, model, audio_source, audio_file) followed by timestamped `[HH:MM:SS]` segments.
