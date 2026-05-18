@@ -1,7 +1,7 @@
 import Foundation
 
 enum TranscriptCleaner {
-    private static let pauseThreshold: TimeInterval = 2.0
+    private static let pauseThreshold: TimeInterval = 0.5
     private static let maxParagraphChars: Int = 500
 
     private static let tokenRegex: NSRegularExpression = {

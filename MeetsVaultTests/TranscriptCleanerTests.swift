@@ -47,15 +47,15 @@ final class TranscriptCleanerTests: XCTestCase {
     }
 
     func testMergeShortGap() {
-        // Gap = 1 s < 2 s threshold → should merge
-        let segments = [seg(0, 2, "Hello"), seg(3, 5, "world")]
+        // Gap = 0.3 s < 0.5 s threshold → should merge
+        let segments = [seg(0, 2, "Hello"), seg(2.3, 5, "world")]
         let result = TranscriptCleaner.merge(segments)
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].text, "Hello world")
     }
 
     func testMergeLongPause() {
-        // Gap = 5 s > 2 s threshold → should split
+        // Gap = 5 s > 0.5 s threshold → should split
         let segments = [seg(0, 2, "Hello."), seg(7, 10, "World.")]
         let result = TranscriptCleaner.merge(segments)
         XCTAssertEqual(result.count, 2)
@@ -78,7 +78,7 @@ final class TranscriptCleanerTests: XCTestCase {
     }
 
     func testMergePreservesTimestamps() {
-        let segments = [seg(1, 3, "A"), seg(3.5, 6, "B"), seg(7, 9, "C")]
+        let segments = [seg(1, 3, "A"), seg(3.2, 6, "B"), seg(6.3, 9, "C")]
         let result = TranscriptCleaner.merge(segments)
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].startSeconds, 1)
