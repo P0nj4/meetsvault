@@ -10,8 +10,10 @@ MeetsVault is a native macOS menu-bar app (macOS 15+, Apple Silicon) that record
 
 Requires: Xcode 16+, `xcodegen` (`brew install xcodegen`).
 
+**Adding a new Swift file:** sources are picked up by glob from the `MeetsVault/` directory, but `project.pbxproj` must be regenerated for Xcode to see them. Run `xcodegen generate --spec project.yml` after creating any new `.swift` file.
+
 ```bash
-# Regenerate .xcodeproj after editing project.yml
+# Regenerate .xcodeproj after editing project.yml OR adding new source files
 xcodegen generate --spec project.yml
 
 # Build release binary
@@ -44,13 +46,16 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 
 **Data flow for a recording session:**
 
-1. `MenuBarController` (or `URLSchemeHandler`) calls `AudioRecorder.start(title:)`
-2. `AudioRecorder` runs `MicrophoneCapture` and `SystemAudioCapture` in parallel, writing `mic.wav` and `system.wav` to a UUID session folder in `~/Library/Application Support/MeetsVault/recordings/<uuid>/`
-3. On stop: `AudioMixer.mix(mic:system:output:)` combines them into `combined.wav`
-4. `WhisperKitEngine.prepare(modelName:progress:)` loads the model (downloads if not cached to `~/Library/Application Support/MeetsVault/models/`)
-5. `WhisperKitEngine.transcribe(audioURL:language:)` returns `[TranscriptSegment]`
-6. `TranscriptWriter.write(...)` saves the `.md` and moves `combined.wav` to the output folder (`Settings.shared.meetingsDirectory`, default `~/Meetings`)
-7. Session temp folder is deleted; `AudioRetentionJob` deletes `.wav` files older than 7 days from the output folder
+1. `MenuBarController` (via menu-bar click or URL scheme) calls `presentCaptureSourcePrompt(title:)`, which opens `CaptureSourceWindow`. The user picks `CaptureMode.micOnly` (laptop speakers — avoids echo when not using headphones) or `CaptureMode.micAndSystem` (headphones — current full capture).
+2. On confirmation, `AudioRecorder.start(title:captureMode:)` is invoked. Screen Recording permission is only required for `.micAndSystem`.
+3. `AudioRecorder` runs `MicrophoneCapture` always, and `SystemAudioCapture` only in `.micAndSystem`, writing `mic.wav` (and optionally `system.wav`) to a UUID session folder in `~/Library/Application Support/MeetsVault/recordings/<uuid>/`.
+4. On stop, the path bifurcates by mode:
+   - **`.micOnly`**: transcribe `mic.wav` only; no mixing, no dedup; `mic.wav` is moved as the output audio; frontmatter `audio_source: microphone`.
+   - **`.micAndSystem`**: `AudioMixer.mix(mic:system:output:)` produces `combined.wav`; both streams are transcribed separately, aligned by `firstSampleTime` offsets, and merged via `TranscriptDeduplicator` to remove echo overlap; frontmatter `audio_source: system+microphone`.
+5. `WhisperKitEngine.prepare(modelName:progress:)` loads the model (downloads if not cached to `~/Library/Application Support/MeetsVault/models/`).
+6. `WhisperKitEngine.transcribe(audioURL:language:speaker:)` returns `[TranscriptSegment]`.
+7. `TranscriptWriter.write(...)` saves the `.md` and moves the audio file to the output folder (`Settings.shared.meetingsDirectory`, default `~/Meetings`).
+8. Session temp folder is deleted; `AudioRetentionJob` deletes `.wav` files older than 7 days from the output folder.
 
 **Key types:**
 - `AudioRecorder` — owns the recording state machine (`idle → recording → transcribing → idle`); notifies `AudioRecorderDelegate`
@@ -59,7 +64,12 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `TranscriptionEngine` — protocol; `WhisperKitEngine` is the only implementation
 - `ModelManager` — tracks available/downloaded Whisper model variants
 
-**URL scheme:** `meetsvault://start?title=...` and `meetsvault://stop` are handled by `URLSchemeHandler`, which calls into the shared `AudioRecorder` via `AppDelegate`.
+**URL scheme:** `meetsvault://start?title=...` and `meetsvault://stop` are handled by `URLSchemeHandler`. `start` opens the `CaptureSourceWindow` prompt (it does NOT begin recording directly — the user must choose mic-only vs mic+system every time). `stop` calls `AudioRecorder.stop()` directly.
+
+**Transcript formatting knobs** (`TranscriptCleaner.swift`): segments from WhisperKit are grouped into paragraphs by `merge(...)`. Tunable thresholds:
+- `pauseThreshold` (default `0.5s`) — a gap larger than this between consecutive segments starts a new paragraph.
+- `maxParagraphChars` (default `500`) — once a paragraph exceeds this and ends with `.!?`, force a split.
+- Changing these directly affects transcript readability — they're the first knobs to tweak when output feels too dense or too fragmented.
 
 **Settings keys** (written to `com.germanpereyra.meetsvault` domain via `UserDefaults.standard`):
 - `selectedModelName` — Whisper variant name (e.g. `"small"`)
@@ -67,5 +77,7 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `meetingsDirectoryPath` — absolute path string; defaults to `~/Meetings`
 - `hasCompletedOnboarding` — bool
 - `hasAcceptedTerms` — bool; gated on step 1 of `WelcomeWindow` before onboarding can proceed
+
+Note: capture mode is **not** persisted in Settings — the user picks it from `CaptureSourceWindow` every recording (no pre-selection, button disabled until choice).
 
 **Transcript format:** Markdown with YAML frontmatter (title, date, started_at, ended_at, duration, language, model, audio_source, audio_file) followed by timestamped `[HH:MM:SS]` segments.
