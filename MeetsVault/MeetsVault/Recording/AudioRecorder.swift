@@ -30,23 +30,28 @@ final class AudioRecorder {
     private var sessionTitle: String?
     private var sessionStartDate: Date?
     private var sessionEndDate: Date?
+    private var sessionCaptureMode: CaptureMode = .micAndSystem
     private let micCapture = MicrophoneCapture()
     private let systemCapture = SystemAudioCapture()
 
-    func start(title: String?) async throws {
+    func start(title: String?, captureMode: CaptureMode) async throws {
         guard state == .idle else {
             NSLog("[MeetsVault] Already recording — ignoring start")
             return
         }
+
+        sessionCaptureMode = captureMode
 
         // Check permissions
         if !PermissionsChecker.microphoneGranted {
             let granted = await PermissionsChecker.requestMicrophone()
             guard granted else { throw RecorderError.microphonePermissionDenied }
         }
-        if !PermissionsChecker.screenRecordingGranted {
-            PermissionsChecker.requestScreenRecording()
-            throw RecorderError.screenCapturePermissionDenied
+        if captureMode == .micAndSystem {
+            if !PermissionsChecker.screenRecordingGranted {
+                PermissionsChecker.requestScreenRecording()
+                throw RecorderError.screenCapturePermissionDenied
+            }
         }
 
         // Create session directory
@@ -63,10 +68,13 @@ final class AudioRecorder {
         let systemURL = dir.appendingPathComponent("system.wav")
 
         try micCapture.start(to: micURL)
-        try await systemCapture.start(to: systemURL)
+        if captureMode == .micAndSystem {
+            try await systemCapture.start(to: systemURL)
+        }
 
         state = .recording
-        NSLog("[MeetsVault] Recording started — session: %@", uuid)
+        NSLog("[MeetsVault] Recording started — session: %@, mode: %@", uuid,
+              captureMode == .micOnly ? "mic-only" : "mic+system")
     }
 
     func stop() async {
@@ -80,17 +88,15 @@ final class AudioRecorder {
         sessionEndDate = endDate
 
         micCapture.stop()
-        await systemCapture.stop()
+        if sessionCaptureMode == .micAndSystem {
+            await systemCapture.stop()
+        }
 
         let micURL = dir.appendingPathComponent("mic.wav")
         let systemURL = dir.appendingPathComponent("system.wav")
         let combinedURL = dir.appendingPathComponent("combined.wav")
 
         do {
-            NSLog("[MeetsVault] Mixing audio...")
-            try AudioMixer.mix(mic: micURL, system: systemURL, output: combinedURL)
-            NSLog("[MeetsVault] Mix complete: %@", combinedURL.path)
-
             let modelName = Settings.shared.selectedModelName
             let language = Settings.shared.transcriptionLanguage
             NSLog("[MeetsVault] Transcribing with model: %@, language: %@", modelName, language)
@@ -100,22 +106,44 @@ final class AudioRecorder {
                 NSLog("[MeetsVault] Model load: %.0f%%", p * 100)
             })
             let lang = language.isEmpty ? nil : language
-            let micSegments = try await engine.transcribe(audioURL: micURL, language: lang, speaker: .you)
-            let systemSegments = try await engine.transcribe(audioURL: systemURL, language: lang, speaker: .others)
 
-            let micFirst = micCapture.firstSampleTime
-            let systemFirst = systemCapture.firstSampleTime
-            let anchor: Date? = [micFirst, systemFirst].compactMap { $0 }.min()
-            let micOffset = (micFirst != nil && anchor != nil) ? micFirst!.timeIntervalSince(anchor!) : 0
-            let systemOffset = (systemFirst != nil && anchor != nil) ? systemFirst!.timeIntervalSince(anchor!) : 0
-            NSLog("[MeetsVault] Stream offsets — mic: %.3fs, system: %.3fs", micOffset, systemOffset)
+            let segments: [TranscriptSegment]
+            let audioForOutput: URL
+            let audioSource: String
 
-            let alignedMic = micSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + micOffset, endSeconds: $0.endSeconds + micOffset, text: $0.text, speaker: $0.speaker) }
-            let alignedSystem = systemSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + systemOffset, endSeconds: $0.endSeconds + systemOffset, text: $0.text, speaker: $0.speaker) }
+            switch sessionCaptureMode {
+            case .micOnly:
+                let micSegments = try await engine.transcribe(audioURL: micURL, language: lang, speaker: .you)
+                segments = micSegments
+                audioForOutput = micURL
+                audioSource = "microphone"
+                NSLog("[MeetsVault] Mic-only transcription: %d segments", segments.count)
 
-            let segments = TranscriptDeduplicator.dedupe(mic: alignedMic, system: alignedSystem)
-            NSLog("[MeetsVault] After dedup: %d mic + %d system → %d segments",
-                  alignedMic.count, alignedSystem.count, segments.count)
+            case .micAndSystem:
+                NSLog("[MeetsVault] Mixing audio...")
+                try AudioMixer.mix(mic: micURL, system: systemURL, output: combinedURL)
+                NSLog("[MeetsVault] Mix complete: %@", combinedURL.path)
+
+                let micSegments = try await engine.transcribe(audioURL: micURL, language: lang, speaker: .you)
+                let systemSegments = try await engine.transcribe(audioURL: systemURL, language: lang, speaker: .others)
+
+                let micFirst = micCapture.firstSampleTime
+                let systemFirst = systemCapture.firstSampleTime
+                let anchor: Date? = [micFirst, systemFirst].compactMap { $0 }.min()
+                let micOffset = (micFirst != nil && anchor != nil) ? micFirst!.timeIntervalSince(anchor!) : 0
+                let systemOffset = (systemFirst != nil && anchor != nil) ? systemFirst!.timeIntervalSince(anchor!) : 0
+                NSLog("[MeetsVault] Stream offsets — mic: %.3fs, system: %.3fs", micOffset, systemOffset)
+
+                let alignedMic = micSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + micOffset, endSeconds: $0.endSeconds + micOffset, text: $0.text, speaker: $0.speaker) }
+                let alignedSystem = systemSegments.map { TranscriptSegment(startSeconds: $0.startSeconds + systemOffset, endSeconds: $0.endSeconds + systemOffset, text: $0.text, speaker: $0.speaker) }
+
+                segments = TranscriptDeduplicator.dedupe(mic: alignedMic, system: alignedSystem)
+                audioForOutput = combinedURL
+                audioSource = "system+microphone"
+                NSLog("[MeetsVault] After dedup: %d mic + %d system → %d segments",
+                      alignedMic.count, alignedSystem.count, segments.count)
+            }
+
             for seg in segments {
                 NSLog("[MeetsVault] [%@] %@", Self.formatTime(seg.startSeconds), seg.text)
             }
@@ -127,8 +155,9 @@ final class AudioRecorder {
                 endedAt: endDate,
                 language: language,
                 modelName: modelName,
+                audioSource: audioSource,
                 segments: segments,
-                combinedAudioURL: combinedURL
+                combinedAudioURL: audioForOutput
             )
             NSLog("[MeetsVault] Transcript saved: %@", mdURL.path)
 
@@ -142,7 +171,6 @@ final class AudioRecorder {
                 capturedDelegate?.recorder(self, didFinishTranscript: mdURL, title: capturedTitle)
             }
 
-            // Clean up session folder (audio was moved to ~/Meetings)
             try? FileManager.default.removeItem(at: dir)
         } catch {
             NSLog("[MeetsVault] Stop failed: %@", error.localizedDescription)

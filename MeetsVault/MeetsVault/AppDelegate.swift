@@ -51,6 +51,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         else { return }
 
         NSLog("[MeetsVault] Received URL: %@", urlString)
-        URLSchemeHandler.handle(url, recorder: menuBarController?.recorder)
+        URLSchemeHandler.handle(url, recorder: menuBarController?.recorder) { [weak self] title in
+            self?.menuBarController?.presentCaptureSourcePrompt(title: title)
+        }
+    }
+
+    func startRecordingViaURLScheme(title: String?) {
+        menuBarController?.presentCaptureSourcePrompt(title: title)
     }
 }

@@ -19,6 +19,7 @@ final class MenuBarController: AudioRecorderDelegate {
     private var aboutWindowController: AboutWindowController?
     private var termsWindowController: TermsWindowController?
     private var modelDownloadWindowController: ModelDownloadWindowController?
+    private var captureSourceWindowController: CaptureSourceWindowController?
     private var isDownloadingModel = false
 
     init() {
@@ -240,17 +241,36 @@ final class MenuBarController: AudioRecorderDelegate {
 
     // MARK: - Actions
 
-    @objc private func startRecording() {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                try await self.recorder.start(title: nil)
-            } catch {
-                NSLog("[MeetsVault] Start failed: %@", error.localizedDescription)
-                let message = error.localizedDescription
-                await MainActor.run { self.showError(message) }
-            }
+    func presentCaptureSourcePrompt(title: String?) {
+        if let existing = captureSourceWindowController {
+            existing.show()
+            return
         }
+        let wc = CaptureSourceWindowController(
+            onStart: { [weak self] mode in
+                guard let self else { return }
+                self.captureSourceWindowController?.closeWindow()
+                self.captureSourceWindowController = nil
+                Task {
+                    do {
+                        try await self.recorder.start(title: title, captureMode: mode)
+                    } catch {
+                        NSLog("[MeetsVault] Start failed: %@", error.localizedDescription)
+                        let message = error.localizedDescription
+                        await MainActor.run { self.showError(message) }
+                    }
+                }
+            },
+            onCancel: { [weak self] in
+                self?.captureSourceWindowController = nil
+            }
+        )
+        captureSourceWindowController = wc
+        wc.show()
+    }
+
+    @objc private func startRecording() {
+        presentCaptureSourcePrompt(title: nil)
     }
 
     @objc private func stopRecording() {

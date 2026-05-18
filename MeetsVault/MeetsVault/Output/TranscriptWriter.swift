@@ -7,6 +7,7 @@ enum TranscriptWriter {
         endedAt: Date,
         language: String,
         modelName: String,
+        audioSource: String,
         segments: [TranscriptSegment],
         combinedAudioURL: URL
     ) throws -> URL {
@@ -30,6 +31,7 @@ enum TranscriptWriter {
             endedAt: endedAt,
             language: language,
             modelName: modelName,
+            audioSource: audioSource,
             audioFileName: wavURL.lastPathComponent,
             segments: segments
         )
@@ -43,6 +45,7 @@ enum TranscriptWriter {
         endedAt: Date,
         language: String,
         modelName: String,
+        audioSource: String = "system+microphone",
         audioFileName: String,
         segments: [TranscriptSegment]
     ) -> String {
@@ -63,7 +66,7 @@ enum TranscriptWriter {
         duration: \(durationStr)
         language: \(language)
         model: whisperkit-\(modelName)
-        audio_source: system+microphone
+        audio_source: \(audioSource)
         audio_file: \(audioFileName)
         ---
 

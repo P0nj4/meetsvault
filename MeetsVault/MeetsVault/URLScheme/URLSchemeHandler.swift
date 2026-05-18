@@ -2,7 +2,11 @@ import Foundation
 import AppKit
 
 enum URLSchemeHandler {
-    static func handle(_ url: URL, recorder: AudioRecorder?) {
+    static func handle(
+        _ url: URL,
+        recorder: AudioRecorder?,
+        presentStartPrompt: ((String?) -> Void)?
+    ) {
         guard url.scheme == "meetsvault" else { return }
 
         let title = url.queryItem("title")
@@ -15,13 +19,8 @@ enum URLSchemeHandler {
                 postNotification(title: "Already recording", body: "Stop the current recording first.")
                 return
             }
-            Task {
-                do {
-                    try await recorder.start(title: title)
-                } catch {
-                    NSLog("[MeetsVault] Start failed: %@", error.localizedDescription)
-                    postNotification(title: "Could not start recording", body: error.localizedDescription)
-                }
+            DispatchQueue.main.async {
+                presentStartPrompt?(title)
             }
 
         case "stop":
