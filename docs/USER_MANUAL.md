@@ -2,7 +2,7 @@
 
 ## 1. What is MeetsVault?
 
-MeetsVault is a menu-bar app for macOS that records your meetings and turns them into text — entirely on your Mac. It captures both your microphone and the audio from the other participants (system audio), then transcribes everything locally using a Whisper AI model. No audio, no transcripts, and no personal data ever leave your computer. There is no account, no subscription, and no internet connection required once the Whisper model is downloaded.
+MeetsVault is a menu-bar app for macOS that records your meetings and turns them into text — entirely on your Mac. It records your microphone, and optionally captures the audio of the other participants (system audio) when you're wearing headphones. Everything is transcribed locally using a Whisper AI model. No audio, no transcripts, and no personal data ever leave your computer. There is no account, no subscription, and no internet connection required once the Whisper model is downloaded.
 
 ---
 
@@ -64,8 +64,8 @@ If the dialog does not appear or you accidentally denied it:
 2. Go to **Privacy & Security → Microphone**
 3. Find **MeetsVault** in the list and enable it
 
-**Screen Recording**
-Used to capture the audio of the other participants on the call — their voices come through your Mac's system audio. Your screen is never recorded or saved; only the audio stream is used.
+**Screen Recording** *(only required if you record with headphones)*
+Used to capture the audio of the other participants on the call — their voices come through your Mac's system audio. Your screen is never recorded or saved; only the audio stream is used. If you only ever record using your laptop speakers (mic-only mode), you can skip this permission.
 
 When you click **Request Permissions**, macOS will take you to System Settings. Find **MeetsVault** in the **Privacy & Security → Screen Recording** list and enable it.
 
@@ -90,7 +90,16 @@ Setup is complete. Click **Finish**. MeetsVault is now running in your menu bar 
 Click the waveform icon in the menu bar to open the MeetsVault menu.
 
 **When idle:**
-- **Start Recording** — begins recording your microphone and system audio simultaneously.
+- **Start Recording** — opens a small **Audio source** dialog (see section 5.1) where you choose how the meeting is being played back. Recording begins after you confirm.
+
+### 5.1 Choosing the audio source
+
+Every time you start a recording, MeetsVault asks how you're listening to the meeting. The button stays disabled until you pick one — there's no default — because the right choice depends on what you're wearing right now.
+
+- **Headphones** — records your microphone **and** the call's system audio in two parallel streams, then merges and de-duplicates them into a single transcript. Use this whenever the other participants' voices reach your ears through headphones, so the mic doesn't pick them up.
+- **Laptop speakers** — records **only** your microphone. Use this when you're not wearing headphones. If the other participants are playing through your laptop speakers, your mic will capture them too (with echo and delay), which produces messy duplicates in the transcript. In this mode the system audio is not captured at all and the transcript will only contain what your mic hears.
+
+Pick the option that matches your current setup and click **Start Recording**. Close the window without choosing to cancel.
 
 **While recording:**
 - **● Recording · MM:SS** — shows elapsed time (read-only, not clickable).
@@ -160,6 +169,8 @@ audio_file: 2026-04-27_1430_weekly-sync.wav
 
 [00:00:08] Thanks everyone for joining.
 ```
+
+The `audio_source` field reflects the option you picked in the **Audio source** dialog when you started recording: `system+microphone` for headphones, `microphone` for laptop speakers.
 
 The `[HH:MM:SS]` timestamps mark when each segment was spoken, measured from the start of the recording.
 

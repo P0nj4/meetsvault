@@ -10,7 +10,8 @@ A native macOS menu-bar app that records meetings and transcribes them locally u
 
 ## Features
 
-- Records system audio + microphone simultaneously
+- Records your microphone, with optional system audio capture for the other participants
+- Pre-recording prompt lets you pick the right mode (headphones → mic + system; laptop speakers → mic only, avoids echo)
 - Transcribes locally using Apple Neural Engine (WhisperKit)
 - Saves transcripts as Markdown files with timestamps
 - Menu-bar only — no Dock icon, no window clutter
@@ -58,7 +59,7 @@ The onboarding walks you through:
 1. Accepting the Terms & Conditions
 2. Choosing a Whisper model (default: `small` — good balance of speed and accuracy)
 3. Choosing where to save transcripts and audio (default: `~/Meetings`)
-4. Granting Microphone and Screen Recording permissions
+4. Granting Microphone (required) and Screen Recording (required only for headphones / system audio mode) permissions
 5. Downloading the selected model (~466 MB for `small`)
 
 After setup, MeetsVault lives in your menu bar as a waveform icon.
@@ -69,7 +70,12 @@ After setup, MeetsVault lives in your menu bar as a waveform icon.
 
 ### Menu bar
 
-Click the waveform icon → **Start Recording** to begin. The icon turns red while recording. Click **Stop Recording** when done — transcription starts automatically.
+Click the waveform icon → **Start Recording**. A small dialog asks how you're listening to the meeting:
+
+- **Headphones** — records your microphone and the call's system audio in parallel.
+- **Laptop speakers** — records only your microphone. Use this when you're not wearing headphones, to avoid the other participants' voices being captured twice (clean from the system stream and echoed through the mic).
+
+Pick a source and confirm **Start Recording**. The icon turns red while recording. Click **Stop Recording** when done — transcription starts automatically.
 
 ### URL scheme
 

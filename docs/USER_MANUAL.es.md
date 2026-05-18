@@ -2,7 +2,7 @@
 
 ## 1. ¿Qué es MeetsVault?
 
-MeetsVault es una aplicación de barra de menú para macOS que graba tus reuniones y las convierte en texto, todo directamente en tu Mac. Captura tanto tu micrófono como el audio de los demás participantes (audio del sistema) y luego transcribe todo de forma local usando un modelo de inteligencia artificial Whisper. Ningún audio, ninguna transcripción ni ningún dato personal abandona tu computadora. No hay cuenta, no hay suscripción y no se necesita conexión a internet una vez que el modelo Whisper está descargado.
+MeetsVault es una aplicación de barra de menú para macOS que graba tus reuniones y las convierte en texto, todo directamente en tu Mac. Graba tu micrófono y, opcionalmente, captura el audio de los demás participantes (audio del sistema) cuando estás usando auriculares. Todo se transcribe de forma local usando un modelo de inteligencia artificial Whisper. Ningún audio, ninguna transcripción ni ningún dato personal abandona tu computadora. No hay cuenta, no hay suscripción y no se necesita conexión a internet una vez que el modelo Whisper está descargado.
 
 ---
 
@@ -64,8 +64,8 @@ Si el diálogo no aparece o lo denegaste por accidente:
 2. Ve a **Privacidad y seguridad → Micrófono**
 3. Busca **MeetsVault** en la lista y actívalo
 
-**Grabación de pantalla**
-Se utiliza para capturar el audio de los demás participantes en la llamada — sus voces llegan a través del audio del sistema de tu Mac. Tu pantalla nunca se graba ni se guarda; solo se usa el flujo de audio.
+**Grabación de pantalla** *(solo requerido si grabás con auriculares)*
+Se utiliza para capturar el audio de los demás participantes en la llamada — sus voces llegan a través del audio del sistema de tu Mac. Tu pantalla nunca se graba ni se guarda; solo se usa el flujo de audio. Si únicamente vas a grabar usando los parlantes de tu laptop (modo solo micrófono), podés omitir este permiso.
 
 Al hacer clic en **Solicitar permisos**, macOS te llevará a Configuración del Sistema. Busca **MeetsVault** en la lista de **Privacidad y seguridad → Grabación de pantalla** y actívalo.
 
@@ -90,7 +90,16 @@ La configuración está completa. Haz clic en **Finalizar**. MeetsVault ahora es
 Haz clic en el ícono de forma de onda en la barra de menú para abrir el menú de MeetsVault.
 
 **Cuando está inactivo:**
-- **Start Recording** — comienza a grabar tu micrófono y el audio del sistema simultáneamente.
+- **Start Recording** — abre un pequeño diálogo de **Fuente de audio** (ver sección 5.1) donde elegís cómo estás escuchando la reunión. La grabación comienza después de que confirmás.
+
+### 5.1 Elegir la fuente de audio
+
+Cada vez que iniciás una grabación, MeetsVault pregunta cómo estás escuchando la reunión. El botón queda deshabilitado hasta que elegís una opción — no hay default — porque la elección correcta depende de lo que tengas puesto en ese momento.
+
+- **Headphones (Auriculares)** — graba tu micrófono **y** el audio del sistema de la llamada en dos flujos paralelos, luego los combina y elimina duplicados en una única transcripción. Usá esta opción siempre que las voces de los demás participantes te lleguen por auriculares, así el micrófono no las recapta.
+- **Laptop speakers (Parlantes de la laptop)** — graba **solo** tu micrófono. Usá esta opción cuando **no** estás usando auriculares. Si las voces de los demás suenan por los parlantes de tu laptop, el micrófono también las va a captar (con eco y retraso), lo que produce duplicados confusos en la transcripción. En este modo el audio del sistema no se captura en absoluto y la transcripción solo contendrá lo que escuche tu micrófono.
+
+Elegí la opción que coincida con tu setup actual y hacé clic en **Start Recording**. Cerrar la ventana sin elegir cancela la operación.
 
 **Durante la grabación:**
 - **● Recording · MM:SS** — muestra el tiempo transcurrido (solo lectura, no es un botón).
@@ -162,6 +171,8 @@ audio_file: 2026-04-27_1430_sincronizacion-semanal.wav
 ```
 
 Los marcadores de tiempo `[HH:MM:SS]` indican cuándo se pronunció cada segmento, medido desde el inicio de la grabación.
+
+El campo `audio_source` refleja la opción que elegiste en el diálogo **Fuente de audio** al iniciar la grabación: `system+microphone` para auriculares, `microphone` para parlantes de la laptop.
 
 Puedes abrir los archivos `.md` en cualquier editor de Markdown — Obsidian, iA Writer, VS Code o el TextEdit simple funcionan perfectamente.
 

@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Keeping user-facing docs in sync
+
+Whenever a change alters something the user sees or does — menu items, dialogs, onboarding steps, permissions, URL scheme behavior, file naming, transcript frontmatter, audio source modes, output folders, etc. — update **all three** of these files in the same commit:
+
+- `README.md` (Features list, Usage section, any relevant snippet)
+- `docs/USER_MANUAL.md` (English)
+- `docs/USER_MANUAL.es.md` (Spanish — mirror of the English version)
+
+If a change is purely internal (refactor, dependency bump, log message, threshold tweak with no UX impact), skip the docs. When in doubt, ask. Out-of-date manuals are worse than no manuals.
+
+---
+
 ## Project
 
 MeetsVault is a native macOS menu-bar app (macOS 15+, Apple Silicon) that records meetings and transcribes them locally using WhisperKit. No cloud, no network calls during recording or transcription.
