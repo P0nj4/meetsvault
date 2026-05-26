@@ -60,6 +60,8 @@ targets:
       base:
         INFOPLIST_FILE: MeetsVault/Info.plist
         CODE_SIGN_ENTITLEMENTS: MeetsVault/MeetsVault.entitlements
+        SWIFT_OBJC_BRIDGING_HEADER: MeetsVault/MeetsVault/MeetsVault-Bridging-Header.h
+        CLANG_ENABLE_OBJC_ARC: YES
     postBuildScripts:
       - name: Stamp build number with date and re-sign
         script: |

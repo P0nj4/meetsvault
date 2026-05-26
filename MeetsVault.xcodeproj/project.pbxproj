@@ -24,6 +24,7 @@
 		70BE0C71BD0EA61B369E0E21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240FE17F2791399C5D33E51 /* Settings.swift */; };
 		70FA831783169536BA8486EB /* LanguageCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200F2A306CCB1E2085FA370C /* LanguageCodeTests.swift */; };
 		7666A27E9AE2DFFCA52C9672 /* AboutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435DF182509402CA3B5199E4 /* AboutWindow.swift */; };
+		79B9D2FEAF04BAFA146FBAC0 /* ObjCExceptionCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CDBAE0A4B81D4A85B7622EA /* ObjCExceptionCatcher.m */; };
 		7EE8E737FB8A1136D7344588 /* MicrophoneCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC18FE369DD26F5E1E961877 /* MicrophoneCapture.swift */; };
 		814FEE3E291614D845B0612C /* URLSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E6CE6398DE6679B0182 /* URLSchemeHandler.swift */; };
 		8846108125F163B56451D159 /* TranscriptDeduplicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */; };
@@ -71,8 +72,10 @@
 		4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4D3E14A64048BAFF976D4E40 /* FilenameBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameBuilder.swift; sourceTree = "<group>"; };
 		4F300998105A4A9668DDCB0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5CDBAE0A4B81D4A85B7622EA /* ObjCExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionCatcher.m; sourceTree = "<group>"; };
 		728F99AB06D86443491EE1F6 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		7C6581085C479DF12D2E29A2 /* TranscriptDeduplicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptDeduplicator.swift; sourceTree = "<group>"; };
+		7EC01918CC913D6B6A4E5E53 /* ObjCExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionCatcher.h; sourceTree = "<group>"; };
 		9E299E5A31AC5EA90DC9C0B9 /* SystemAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemAudioCapture.swift; sourceTree = "<group>"; };
 		A592CEB2F35DF39649D3A594 /* MeetsVault.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetsVault.entitlements; sourceTree = "<group>"; };
 		A6CC503FC331F1230FBFD169 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
@@ -82,6 +85,7 @@
 		B726AA17E630A571DDFF7CE4 /* TermsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsWindow.swift; sourceTree = "<group>"; };
 		BC135583112DEED7552A5242 /* MeetsVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetsVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		C80ED1BBE25A9326B950795F /* MeetsVault-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeetsVault-Bridging-Header.h"; sourceTree = "<group>"; };
 		CA08001A00FBE64166F53444 /* TranscriptWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptWriter.swift; sourceTree = "<group>"; };
 		D062CEC235100A513AFC0C93 /* PermissionsChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsChecker.swift; sourceTree = "<group>"; };
 		D1F6C24BA810BE333BBF3B23 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
@@ -150,6 +154,8 @@
 				DCD533054816430AFC9D1E54 /* CaptureError.swift */,
 				F03BC516A035A1E6BFC0E589 /* CaptureMode.swift */,
 				DC18FE369DD26F5E1E961877 /* MicrophoneCapture.swift */,
+				7EC01918CC913D6B6A4E5E53 /* ObjCExceptionCatcher.h */,
+				5CDBAE0A4B81D4A85B7622EA /* ObjCExceptionCatcher.m */,
 				9E299E5A31AC5EA90DC9C0B9 /* SystemAudioCapture.swift */,
 			);
 			path = Recording;
@@ -160,6 +166,7 @@
 			children = (
 				4A3FE94F9AB4A5AD418C935F /* AppDelegate.swift */,
 				728F99AB06D86443491EE1F6 /* AppIcon.icns */,
+				C80ED1BBE25A9326B950795F /* MeetsVault-Bridging-Header.h */,
 				0E897F32BE415966891E89B7 /* MeetsVaultApp.swift */,
 				FE79F4E8857AEBA24A047D1E /* MenuBar */,
 				A55730307C44148631C01DE6 /* Notifications */,
@@ -402,6 +409,7 @@
 				970A0502EDDF313450C0056B /* ModelDownloadWindow.swift in Sources */,
 				1731B9148C4C4E88AAE20BEE /* ModelManager.swift in Sources */,
 				9559D58701302BEE2AB8DB8A /* NotificationManager.swift in Sources */,
+				79B9D2FEAF04BAFA146FBAC0 /* ObjCExceptionCatcher.m in Sources */,
 				495B5B560A8036840DE50FFA /* PermissionsChecker.swift in Sources */,
 				70BE0C71BD0EA61B369E0E21 /* Settings.swift in Sources */,
 				4D5CFAEC82ADB5D1C25E3932 /* SystemAudioCapture.swift in Sources */,
@@ -445,6 +453,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = MeetsVault/MeetsVault.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MeetsVault/Info.plist;
@@ -453,6 +462,7 @@
 					"@executable_path/../Frameworks",
 				);
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "MeetsVault/MeetsVault/MeetsVault-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -537,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = MeetsVault/MeetsVault.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MeetsVault/Info.plist;
@@ -545,6 +556,7 @@
 					"@executable_path/../Frameworks",
 				);
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "MeetsVault/MeetsVault/MeetsVault-Bridging-Header.h";
 			};
 			name = Debug;
 		};
