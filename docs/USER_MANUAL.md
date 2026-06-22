@@ -205,6 +205,8 @@ meetsvault://start?title=Your+Meeting+Title
 meetsvault://stop
 ```
 
+If a recording is in progress, MeetsVault brings up a confirmation prompt — choose **Stop recording** to stop and transcribe, or **Continue recording** to keep going. If nothing is recording, the URL is ignored.
+
 **From the terminal:**
 
 ```bash

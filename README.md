@@ -85,7 +85,7 @@ MeetsVault registers the `meetsvault://` scheme, so you can trigger it from scri
 # Start a named recording
 open 'meetsvault://start?title=Weekly%20Sync'
 
-# Stop and transcribe
+# Stop and transcribe (asks to confirm if a recording is in progress; ignored otherwise)
 open 'meetsvault://stop'
 ```
 
