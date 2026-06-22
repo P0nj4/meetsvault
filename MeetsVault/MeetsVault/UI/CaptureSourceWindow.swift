@@ -3,13 +3,17 @@ import SwiftUI
 
 // MARK: - Window controller
 
-final class CaptureSourceWindowController: NSWindowController {
-    convenience init(
+final class CaptureSourceWindowController: NSWindowController, NSWindowDelegate {
+    private let onCancel: () -> Void
+    private var didStart = false
+
+    init(
         initialTitle: String?,
         onStart: @escaping (String?, CaptureMode) -> Void,
         onCancel: @escaping () -> Void
     ) {
-        let view = CaptureSourceView(initialTitle: initialTitle, onStart: onStart, onCancel: onCancel)
+        self.onCancel = onCancel
+        let view = CaptureSourceView(initialTitle: initialTitle, onStart: onStart)
         let hosting = NSHostingController(rootView: view)
         let window = NSWindow(contentViewController: hosting)
         window.setContentSize(NSSize(width: 460, height: 390))
@@ -17,7 +21,12 @@ final class CaptureSourceWindowController: NSWindowController {
         window.title = "Audio source"
         window.isReleasedWhenClosed = false
         window.center()
-        self.init(window: window)
+        super.init(window: window)
+        window.delegate = self
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     func show() {
@@ -26,7 +35,17 @@ final class CaptureSourceWindowController: NSWindowController {
     }
 
     func closeWindow() {
+        didStart = true
         window?.close()
+    }
+
+    // Fires for a user-initiated close (title-bar X). The programmatic close on
+    // Start sets `didStart` first, so onCancel only runs when the user dismisses
+    // the dialog without starting — letting the controller reset and re-seed the
+    // title on the next Start.
+    func windowWillClose(_ notification: Notification) {
+        guard !didStart else { return }
+        onCancel()
     }
 }
 
@@ -36,7 +55,6 @@ private let brandColor = Color(red: 0xFB / 255.0, green: 0x74 / 255.0, blue: 0x5
 
 private struct CaptureSourceView: View {
     let onStart: (String?, CaptureMode) -> Void
-    let onCancel: () -> Void
 
     @State private var meetingName: String
     @State private var selected: CaptureMode?
@@ -44,11 +62,9 @@ private struct CaptureSourceView: View {
 
     init(
         initialTitle: String?,
-        onStart: @escaping (String?, CaptureMode) -> Void,
-        onCancel: @escaping () -> Void
+        onStart: @escaping (String?, CaptureMode) -> Void
     ) {
         self.onStart = onStart
-        self.onCancel = onCancel
         _meetingName = State(initialValue: initialTitle ?? "")
     }
 
