@@ -21,6 +21,7 @@ final class MenuBarController: AudioRecorderDelegate {
     private var modelDownloadWindowController: ModelDownloadWindowController?
     private var captureSourceWindowController: CaptureSourceWindowController?
     private var isDownloadingModel = false
+    private var isPresentingStopConfirmation = false
 
     init() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -267,6 +268,24 @@ final class MenuBarController: AudioRecorderDelegate {
         )
         captureSourceWindowController = wc
         wc.show()
+    }
+
+    func presentStopConfirmation() {
+        guard !isPresentingStopConfirmation else { return }
+        isPresentingStopConfirmation = true
+        NSApp.activate(ignoringOtherApps: true)
+        let alert = NSAlert()
+        alert.messageText = "Stop recording?"
+        alert.informativeText = "MeetsVault is currently recording. Stop and transcribe now, or keep recording?"
+        alert.addButton(withTitle: "Stop recording")
+        alert.addButton(withTitle: "Continue recording")
+        let response = alert.runModal()
+        isPresentingStopConfirmation = false
+        if response == .alertFirstButtonReturn {
+            Task { [weak self] in
+                await self?.recorder.stop()
+            }
+        }
     }
 
     @objc private func startRecording() {

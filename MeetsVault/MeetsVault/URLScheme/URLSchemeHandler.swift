@@ -5,7 +5,8 @@ enum URLSchemeHandler {
     static func handle(
         _ url: URL,
         recorder: AudioRecorder?,
-        presentStartPrompt: ((String?) -> Void)?
+        presentStartPrompt: ((String?) -> Void)?,
+        presentStopPrompt: (() -> Void)?
     ) {
         guard url.scheme == "meetsvault" else { return }
 
@@ -27,10 +28,11 @@ enum URLSchemeHandler {
             guard let recorder else { return }
             guard recorder.state == .recording else {
                 NSLog("[MeetsVault] URL stop ignored — not recording")
-                postNotification(title: "Nothing to stop", body: "MeetsVault is not currently recording.")
                 return
             }
-            Task { await recorder.stop() }
+            DispatchQueue.main.async {
+                presentStopPrompt?()
+            }
 
         default:
             NSLog("[MeetsVault] Unknown URL command: %@", url.absoluteString)
