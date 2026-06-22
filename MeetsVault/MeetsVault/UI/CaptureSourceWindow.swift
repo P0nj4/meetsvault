@@ -4,11 +4,15 @@ import SwiftUI
 // MARK: - Window controller
 
 final class CaptureSourceWindowController: NSWindowController {
-    convenience init(onStart: @escaping (CaptureMode) -> Void, onCancel: @escaping () -> Void) {
-        let view = CaptureSourceView(onStart: onStart, onCancel: onCancel)
+    convenience init(
+        initialTitle: String?,
+        onStart: @escaping (String?, CaptureMode) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        let view = CaptureSourceView(initialTitle: initialTitle, onStart: onStart, onCancel: onCancel)
         let hosting = NSHostingController(rootView: view)
         let window = NSWindow(contentViewController: hosting)
-        window.setContentSize(NSSize(width: 460, height: 320))
+        window.setContentSize(NSSize(width: 460, height: 390))
         window.styleMask = [.titled, .closable]
         window.title = "Audio source"
         window.isReleasedWhenClosed = false
@@ -31,14 +35,35 @@ final class CaptureSourceWindowController: NSWindowController {
 private let brandColor = Color(red: 0xFB / 255.0, green: 0x74 / 255.0, blue: 0x59 / 255.0)
 
 private struct CaptureSourceView: View {
-    let onStart: (CaptureMode) -> Void
+    let onStart: (String?, CaptureMode) -> Void
     let onCancel: () -> Void
 
+    @State private var meetingName: String
     @State private var selected: CaptureMode?
+    @FocusState private var nameFocused: Bool
+
+    init(
+        initialTitle: String?,
+        onStart: @escaping (String?, CaptureMode) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        self.onStart = onStart
+        self.onCancel = onCancel
+        _meetingName = State(initialValue: initialTitle ?? "")
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Meeting name")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.secondary)
+                    TextField("Optional — e.g. Weekly Standup", text: $meetingName)
+                        .textFieldStyle(.roundedBorder)
+                        .focused($nameFocused)
+                }
+
                 Text("How are you listening to the meeting?")
                     .font(.headline)
                     .multilineTextAlignment(.center)
@@ -71,13 +96,17 @@ private struct CaptureSourceView: View {
             HStack {
                 Spacer()
                 Button("Start Recording") {
-                    if let mode = selected { onStart(mode) }
+                    if let mode = selected {
+                        let trimmed = meetingName.trimmingCharacters(in: .whitespacesAndNewlines)
+                        onStart(trimmed.isEmpty ? nil : trimmed, mode)
+                    }
                 }
                 .keyboardShortcut(.defaultAction)
                 .disabled(selected == nil)
             }
             .padding(16)
         }
+        .onAppear { nameFocused = true }
     }
 }
 

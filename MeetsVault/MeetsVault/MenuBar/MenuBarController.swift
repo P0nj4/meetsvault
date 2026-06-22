@@ -248,13 +248,14 @@ final class MenuBarController: AudioRecorderDelegate {
             return
         }
         let wc = CaptureSourceWindowController(
-            onStart: { [weak self] mode in
+            initialTitle: title,
+            onStart: { [weak self] name, mode in
                 guard let self else { return }
                 self.captureSourceWindowController?.closeWindow()
                 self.captureSourceWindowController = nil
                 Task {
                     do {
-                        try await self.recorder.start(title: title, captureMode: mode)
+                        try await self.recorder.start(title: name, captureMode: mode)
                     } catch {
                         NSLog("[MeetsVault] Start failed: %@", error.localizedDescription)
                         let message = error.localizedDescription
