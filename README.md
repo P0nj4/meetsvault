@@ -70,12 +70,12 @@ After setup, MeetsVault lives in your menu bar as a waveform icon.
 
 ### Menu bar
 
-Click the waveform icon → **Start Recording**. A small dialog asks how you're listening to the meeting:
+Click the waveform icon → **Start Recording**. A small dialog opens with an optional **Meeting name** field and asks how you're listening to the meeting:
 
 - **Headphones** — records your microphone and the call's system audio in parallel.
 - **Laptop speakers** — records only your microphone. Use this when you're not wearing headphones, to avoid the other participants' voices being captured twice (clean from the system stream and echoed through the mic).
 
-Pick a source and confirm **Start Recording**. The icon turns red while recording. Click **Stop Recording** when done — transcription starts automatically.
+Optionally type a meeting name (it becomes the transcript title and filename; left blank, the recording is saved as `untitled`), pick a source, and confirm **Start Recording**. The icon turns red while recording. Click **Stop Recording** when done — transcription starts automatically.
 
 ### URL scheme
 
@@ -88,6 +88,8 @@ open 'meetsvault://start?title=Weekly%20Sync'
 # Stop and transcribe (asks to confirm if a recording is in progress; ignored otherwise)
 open 'meetsvault://stop'
 ```
+
+> The `title` you pass pre-fills the **Meeting name** field in the dialog, where you can edit it before starting.
 
 ### Output
 

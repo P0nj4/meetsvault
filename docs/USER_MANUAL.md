@@ -90,7 +90,7 @@ Setup is complete. Click **Finish**. MeetsVault is now running in your menu bar 
 Click the waveform icon in the menu bar to open the MeetsVault menu.
 
 **When idle:**
-- **Start Recording** — opens a small **Audio source** dialog (see section 5.1) where you choose how the meeting is being played back. Recording begins after you confirm.
+- **Start Recording** — opens a small **Audio source** dialog (see section 5.1) where you name the meeting and choose how the meeting is being played back. Recording begins after you confirm.
 
 ### 5.1 Choosing the audio source
 
@@ -98,6 +98,8 @@ Every time you start a recording, MeetsVault asks how you're listening to the me
 
 - **Headphones** — records your microphone **and** the call's system audio in two parallel streams, then merges and de-duplicates them into a single transcript. Use this whenever the other participants' voices reach your ears through headphones, so the mic doesn't pick them up.
 - **Laptop speakers** — records **only** your microphone. Use this when you're not wearing headphones. If the other participants are playing through your laptop speakers, your mic will capture them too (with echo and delay), which produces messy duplicates in the transcript. In this mode the system audio is not captured at all and the transcript will only contain what your mic hears.
+
+At the top of this dialog is an optional **Meeting name** field. Whatever you type becomes the transcript's title and filename; leave it blank and the recording is saved as `untitled`. When you start from the URL scheme with a `title`, this field is pre-filled with that title and you can edit it before starting.
 
 Pick the option that matches your current setup and click **Start Recording**. Close the window without choosing to cancel.
 

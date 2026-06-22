@@ -90,7 +90,7 @@ La configuración está completa. Haz clic en **Finalizar**. MeetsVault ahora es
 Haz clic en el ícono de forma de onda en la barra de menú para abrir el menú de MeetsVault.
 
 **Cuando está inactivo:**
-- **Start Recording** — abre un pequeño diálogo de **Fuente de audio** (ver sección 5.1) donde elegís cómo estás escuchando la reunión. La grabación comienza después de que confirmás.
+- **Start Recording** — abre un pequeño diálogo de **Fuente de audio** (ver sección 5.1) donde nombrás la reunión y elegís cómo estás escuchando la reunión. La grabación comienza después de que confirmás.
 
 ### 5.1 Elegir la fuente de audio
 
@@ -98,6 +98,8 @@ Cada vez que iniciás una grabación, MeetsVault pregunta cómo estás escuchand
 
 - **Headphones (Auriculares)** — graba tu micrófono **y** el audio del sistema de la llamada en dos flujos paralelos, luego los combina y elimina duplicados en una única transcripción. Usá esta opción siempre que las voces de los demás participantes te lleguen por auriculares, así el micrófono no las recapta.
 - **Laptop speakers (Parlantes de la laptop)** — graba **solo** tu micrófono. Usá esta opción cuando **no** estás usando auriculares. Si las voces de los demás suenan por los parlantes de tu laptop, el micrófono también las va a captar (con eco y retraso), lo que produce duplicados confusos en la transcripción. En este modo el audio del sistema no se captura en absoluto y la transcripción solo contendrá lo que escuche tu micrófono.
+
+En la parte superior de este diálogo hay un campo opcional **Meeting name** (nombre de la reunión). Lo que escribas se convierte en el título y el nombre de archivo de la transcripción; si lo dejás en blanco, la grabación se guarda como `untitled`. Cuando iniciás desde el esquema de URL con un `title`, este campo se rellena con ese título y podés editarlo antes de empezar.
 
 Elegí la opción que coincida con tu setup actual y hacé clic en **Start Recording**. Cerrar la ventana sin elegir cancela la operación.
 
