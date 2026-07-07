@@ -89,7 +89,8 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `meetingsDirectoryPath` — absolute path string; defaults to `~/Meetings`
 - `hasCompletedOnboarding` — bool
 - `hasAcceptedTerms` — bool; gated on step 1 of `WelcomeWindow` before onboarding can proceed
+- `lastCaptureMode` — raw value of the last `CaptureMode` the user picked; `nil` until the first successful Start
 
-Note: capture mode is **not** persisted in Settings — the user picks it from `CaptureSourceWindow` every recording (no pre-selection, button disabled until choice).
+Note: capture mode is persisted in Settings as `lastCaptureMode` and pre-selects the dialog the next time it opens. On first-ever launch it's `nil` — nothing is pre-selected and the button stays disabled until the user picks.
 
 **Transcript format:** Markdown with YAML frontmatter (title, date, started_at, ended_at, duration, language, model, audio_source, audio_file) followed by timestamped `[HH:MM:SS]` segments.
