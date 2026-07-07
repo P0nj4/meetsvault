@@ -17,6 +17,7 @@
 		41F79A757737EA48C645D679 /* TranscriptCleanerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27F6C20A3C9B6279EC8A9E2 /* TranscriptCleanerTests.swift */; };
 		495B5B560A8036840DE50FFA /* PermissionsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D062CEC235100A513AFC0C93 /* PermissionsChecker.swift */; };
 		4D5CFAEC82ADB5D1C25E3932 /* SystemAudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E299E5A31AC5EA90DC9C0B9 /* SystemAudioCapture.swift */; };
+		4FE09874165D0205324E2D39 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889FB3630210DBB2CCC9A5C /* SettingsTests.swift */; };
 		554D29E41EF20A3D5F043616 /* CaptureError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD533054816430AFC9D1E54 /* CaptureError.swift */; };
 		5F4E8D8FE65B0CF4146D582D /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 728F99AB06D86443491EE1F6 /* AppIcon.icns */; };
 		646F55DD00829F5E76066B27 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */; };
@@ -73,6 +74,7 @@
 		4D3E14A64048BAFF976D4E40 /* FilenameBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameBuilder.swift; sourceTree = "<group>"; };
 		4F300998105A4A9668DDCB0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5CDBAE0A4B81D4A85B7622EA /* ObjCExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionCatcher.m; sourceTree = "<group>"; };
+		6889FB3630210DBB2CCC9A5C /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		728F99AB06D86443491EE1F6 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		7C6581085C479DF12D2E29A2 /* TranscriptDeduplicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptDeduplicator.swift; sourceTree = "<group>"; };
 		7EC01918CC913D6B6A4E5E53 /* ObjCExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionCatcher.h; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			children = (
 				34BE1C6BC953E865CA8917D5 /* FilenameBuilderTests.swift */,
 				200F2A306CCB1E2085FA370C /* LanguageCodeTests.swift */,
+				6889FB3630210DBB2CCC9A5C /* SettingsTests.swift */,
 				B27F6C20A3C9B6279EC8A9E2 /* TranscriptCleanerTests.swift */,
 				3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */,
 				E1FDCA5BF1AE3FEC7DFE4C8A /* TranscriptWriterTests.swift */,
@@ -432,6 +435,7 @@
 			files = (
 				CA804E4EA241CC6496F6816C /* FilenameBuilderTests.swift in Sources */,
 				70FA831783169536BA8486EB /* LanguageCodeTests.swift in Sources */,
+				4FE09874165D0205324E2D39 /* SettingsTests.swift in Sources */,
 				41F79A757737EA48C645D679 /* TranscriptCleanerTests.swift in Sources */,
 				8846108125F163B56451D159 /* TranscriptDeduplicatorTests.swift in Sources */,
 				CFC80C8524B7D047D4E87DC7 /* TranscriptWriterTests.swift in Sources */,
