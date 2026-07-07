@@ -94,7 +94,7 @@ Click the waveform icon in the menu bar to open the MeetsVault menu.
 
 ### 5.1 Choosing the audio source
 
-Every time you start a recording, MeetsVault asks how you're listening to the meeting. The button stays disabled until you pick one — there's no default — because the right choice depends on what you're wearing right now.
+Every time you start a recording, MeetsVault asks how you're listening to the meeting. The dialog preselects whichever option you picked the last time you started a recording, so most of the time you can just confirm. The very first time you ever use MeetsVault, nothing is preselected and the button stays disabled until you pick one.
 
 - **Headphones** — records your microphone **and** the call's system audio in two parallel streams, then merges and de-duplicates them into a single transcript. Use this whenever the other participants' voices reach your ears through headphones, so the mic doesn't pick them up.
 - **Laptop speakers** — records **only** your microphone. Use this when you're not wearing headphones. If the other participants are playing through your laptop speakers, your mic will capture them too (with echo and delay), which produces messy duplicates in the transcript. In this mode the system audio is not captured at all and the transcript will only contain what your mic hears.

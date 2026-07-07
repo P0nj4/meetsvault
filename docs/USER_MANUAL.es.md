@@ -94,7 +94,7 @@ Haz clic en el ícono de forma de onda en la barra de menú para abrir el menú 
 
 ### 5.1 Elegir la fuente de audio
 
-Cada vez que iniciás una grabación, MeetsVault pregunta cómo estás escuchando la reunión. El botón queda deshabilitado hasta que elegís una opción — no hay default — porque la elección correcta depende de lo que tengas puesto en ese momento.
+Cada vez que iniciás una grabación, MeetsVault pregunta cómo estás escuchando la reunión. El diálogo preselecciona la opción que elegiste la última vez que iniciaste una grabación, así que la mayoría de las veces alcanza con confirmar. La primerísima vez que usás MeetsVault no hay nada preseleccionado y el botón queda deshabilitado hasta que elegís una opción.
 
 - **Headphones (Auriculares)** — graba tu micrófono **y** el audio del sistema de la llamada en dos flujos paralelos, luego los combina y elimina duplicados en una única transcripción. Usá esta opción siempre que las voces de los demás participantes te lleguen por auriculares, así el micrófono no las recapta.
 - **Laptop speakers (Parlantes de la laptop)** — graba **solo** tu micrófono. Usá esta opción cuando **no** estás usando auriculares. Si las voces de los demás suenan por los parlantes de tu laptop, el micrófono también las va a captar (con eco y retraso), lo que produce duplicados confusos en la transcripción. En este modo el audio del sistema no se captura en absoluto y la transcripción solo contendrá lo que escuche tu micrófono.

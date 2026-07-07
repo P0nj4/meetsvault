@@ -70,7 +70,7 @@ After setup, MeetsVault lives in your menu bar as a waveform icon.
 
 ### Menu bar
 
-Click the waveform icon → **Start Recording**. A small dialog opens with an optional **Meeting name** field and asks how you're listening to the meeting:
+Click the waveform icon → **Start Recording**. A small dialog opens with an optional **Meeting name** field and asks how you're listening to the meeting (the option you picked last time is preselected):
 
 - **Headphones** — records your microphone and the call's system audio in parallel.
 - **Laptop speakers** — records only your microphone. Use this when you're not wearing headphones, to avoid the other participants' voices being captured twice (clean from the system stream and echoed through the mic).
