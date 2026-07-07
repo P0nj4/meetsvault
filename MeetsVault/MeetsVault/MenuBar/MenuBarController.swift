@@ -276,10 +276,10 @@ final class MenuBarController: AudioRecorderDelegate {
         isPresentingStopConfirmation = true
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "Stop recording?"
-        alert.informativeText = "MeetsVault is currently recording. Stop and transcribe now, or keep recording?"
-        alert.addButton(withTitle: "Stop recording")
-        alert.addButton(withTitle: "Continue recording")
+        alert.messageText = "Stop now?"
+        alert.informativeText = "MeetsVault is still in progress. Stop it now, or keep going?"
+        alert.addButton(withTitle: "Stop")
+        alert.addButton(withTitle: "Continue")
         let response = alert.runModal()
         isPresentingStopConfirmation = false
         if response == .alertFirstButtonReturn {
