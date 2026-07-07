@@ -249,8 +249,10 @@ final class MenuBarController: AudioRecorderDelegate {
         }
         let wc = CaptureSourceWindowController(
             initialTitle: title,
+            initialMode: Settings.shared.lastCaptureMode,
             onStart: { [weak self] name, mode in
                 guard let self else { return }
+                Settings.shared.lastCaptureMode = mode
                 self.captureSourceWindowController?.closeWindow()
                 self.captureSourceWindowController = nil
                 Task {

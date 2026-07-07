@@ -9,11 +9,12 @@ final class CaptureSourceWindowController: NSWindowController, NSWindowDelegate 
 
     init(
         initialTitle: String?,
+        initialMode: CaptureMode?,
         onStart: @escaping (String?, CaptureMode) -> Void,
         onCancel: @escaping () -> Void
     ) {
         self.onCancel = onCancel
-        let view = CaptureSourceView(initialTitle: initialTitle, onStart: onStart)
+        let view = CaptureSourceView(initialTitle: initialTitle, initialMode: initialMode, onStart: onStart)
         let hosting = NSHostingController(rootView: view)
         let window = NSWindow(contentViewController: hosting)
         window.setContentSize(NSSize(width: 460, height: 390))
@@ -62,10 +63,12 @@ private struct CaptureSourceView: View {
 
     init(
         initialTitle: String?,
+        initialMode: CaptureMode?,
         onStart: @escaping (String?, CaptureMode) -> Void
     ) {
         self.onStart = onStart
         _meetingName = State(initialValue: initialTitle ?? "")
+        _selected = State(initialValue: initialMode)
     }
 
     var body: some View {
