@@ -9,6 +9,7 @@ final class Settings {
         static let transcriptionLanguage = "transcriptionLanguage"
         static let downloadedModels = "downloadedModels"
         static let meetingsDirectoryPath = "meetingsDirectoryPath"
+        static let lastCaptureMode = "lastCaptureMode"
     }
 
     private static var onboardingFlagURL: URL {
@@ -55,6 +56,14 @@ final class Settings {
     var transcriptionLanguage: String {
         get { defaults.string(forKey: Key.transcriptionLanguage) ?? "en" }
         set { defaults.set(newValue, forKey: Key.transcriptionLanguage) }
+    }
+
+    var lastCaptureMode: CaptureMode? {
+        get {
+            guard let raw = defaults.string(forKey: Key.lastCaptureMode) else { return nil }
+            return CaptureMode(rawValue: raw)
+        }
+        set { defaults.set(newValue?.rawValue, forKey: Key.lastCaptureMode) }
     }
 
     var downloadedModels: [String] {
