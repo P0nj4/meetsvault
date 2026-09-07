@@ -96,6 +96,7 @@ final class MenuBarController: AudioRecorderDelegate {
 
         menu.addItem(makeLanguageSubmenu())
         menu.addItem(makeModelSubmenu())
+        menu.addItem(makeNotificationsSubmenu())
 
         let reTranscribeItem = NSMenuItem(title: "Re-transcribe audio…", action: #selector(reTranscribeAudio), keyEquivalent: "")
         reTranscribeItem.target = self
@@ -201,6 +202,61 @@ final class MenuBarController: AudioRecorderDelegate {
         sub.addItem(switchItem)
         item.submenu = sub
         return item
+    }
+
+    private func makeNotificationsSubmenu() -> NSMenuItem {
+        let item = NSMenuItem(title: "Phone Notifications", action: nil, keyEquivalent: "")
+        let sub = NSMenu()
+        sub.autoenablesItems = false
+
+        let topic = Settings.shared.ntfyTopic
+        let statusItem = NSMenuItem(
+            title: "Topic: \(topic ?? "not set")",
+            action: nil,
+            keyEquivalent: ""
+        )
+        statusItem.isEnabled = false
+        sub.addItem(statusItem)
+
+        let setItem = NSMenuItem(title: "Set ntfy Topic…", action: #selector(setNtfyTopic), keyEquivalent: "")
+        setItem.target = self
+        sub.addItem(setItem)
+
+        item.submenu = sub
+        return item
+    }
+
+    @objc private func setNtfyTopic() {
+        NSApp.activate(ignoringOtherApps: true)
+
+        let alert = NSAlert()
+        alert.messageText = "ntfy topic"
+        alert.informativeText = "MeetsVault posts to this topic when you ask for a status report. Subscribe your phone to the same topic in the ntfy app. Leave it empty to turn phone notifications off."
+        alert.addButton(withTitle: "Save")
+        alert.addButton(withTitle: "Cancel")
+
+        let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
+        field.stringValue = Settings.shared.ntfyTopic ?? ""
+        field.placeholderString = "my-topic"
+        alert.accessoryView = field
+        alert.window.initialFirstResponder = field
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        switch Settings.validateNtfyTopic(field.stringValue) {
+        case .clear:
+            Settings.shared.ntfyTopic = nil
+            buildMenu()
+        case .valid(let topic):
+            Settings.shared.ntfyTopic = topic
+            buildMenu()
+        case .invalid(let reason):
+            let error = NSAlert()
+            error.messageText = "That topic is not valid"
+            error.informativeText = reason
+            error.addButton(withTitle: "OK")
+            error.runModal()
+        }
     }
 
     @objc private func openModelDownloadWindow() {
