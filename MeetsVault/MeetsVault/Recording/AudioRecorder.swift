@@ -27,8 +27,8 @@ final class AudioRecorder {
     }
 
     private var sessionDir: URL?
-    private var sessionTitle: String?
-    private var sessionStartDate: Date?
+    private(set) var sessionTitle: String?
+    private(set) var sessionStartDate: Date?
     private var sessionEndDate: Date?
     private var sessionCaptureMode: CaptureMode = .micAndSystem
     private let micCapture = MicrophoneCapture()
