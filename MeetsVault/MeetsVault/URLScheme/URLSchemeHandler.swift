@@ -34,6 +34,27 @@ enum URLSchemeHandler {
                 presentStopPrompt?()
             }
 
+        case "status_report":
+            guard let recorder else { return }
+            guard recorder.state == .recording else {
+                NSLog("[MeetsVault] status_report ignored — not recording")
+                return
+            }
+            guard let topic = Settings.shared.ntfyTopic else {
+                NSLog("[MeetsVault] status_report ignored — no ntfy topic configured")
+                return
+            }
+            let elapsed = Date().timeIntervalSince(recorder.sessionStartDate ?? Date())
+            let client = NtfyClient(serverURL: Settings.shared.ntfyServerURL, topic: topic)
+            client.send(
+                title: RecordingStatusMessage.title,
+                body: RecordingStatusMessage.body(
+                    sessionTitle: recorder.sessionTitle,
+                    elapsed: elapsed
+                ),
+                tags: RecordingStatusMessage.tags
+            )
+
         default:
             NSLog("[MeetsVault] Unknown URL command: %@", url.absoluteString)
             postNotification(title: "Unknown command", body: url.absoluteString)

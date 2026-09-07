@@ -224,6 +224,27 @@ Cualquier herramienta que pueda abrir una URL puede iniciar una grabación. Apun
 
 > **Consejo:** Puedes crear una habilidad de Claude Code que ejecute `meetsvault://start` cuando digas "iniciar la reunión" — el esquema de URL está diseñado exactamente para este tipo de automatización.
 
+### Verificar si una grabación está en curso
+
+```
+meetsvault://status_report
+```
+
+Envía una notificación a tu teléfono **solo si hay una grabación en curso**. Si no se está grabando nada, no ocurre nada — la ausencia de notificación es la respuesta. Útil cuando te alejaste de tu Mac y no recuerdas si dejaste una grabación en marcha.
+
+Esto requiere una configuración única, descrita a continuación. Sin ella, el comando no hace nada.
+
+### Configurar las notificaciones al teléfono
+
+1. Instala la app [ntfy](https://ntfy.sh) en tu teléfono.
+2. En la app, suscríbete a un topic. Elige un nombre largo y difícil de adivinar — cualquiera que conozca el nombre del topic puede leer las notificaciones que se le envían.
+3. En tu Mac, haz clic en el ícono de MeetsVault en la barra de menú y elige **Phone Notifications → Set ntfy Topic…**.
+4. Escribe el mismo nombre de topic y haz clic en **Save**. El submenú ahora muestra `Topic: <your-topic>`.
+
+Para desactivar las notificaciones al teléfono, abre el mismo diálogo y guarda el campo vacío.
+
+El topic se almacena únicamente en tu Mac. La única información que sale de tu Mac es la notificación misma — el título de la reunión y cuánto tiempo lleva grabando — y solo cuando pides explícitamente un reporte de estado.
+
 ---
 
 ## 10. Cambiar de modelo Whisper
@@ -253,7 +274,7 @@ Los modelos descargados se almacenan en `~/Library/Application Support/MeetsVaul
 
 ## 11. Privacidad
 
-MeetsVault no realiza ninguna llamada de red durante la grabación o la transcripción. La única vez que se conecta a internet es cuando descarga un modelo Whisper por primera vez (los modelos provienen de Hugging Face). Una vez descargado, el modelo reside en tu Mac y nunca se vuelve a buscar a menos que lo elimines. Nada sobre tus reuniones — ni el audio, ni la transcripción, ni el título — se envía jamás a ningún servidor.
+MeetsVault no realiza ninguna llamada de red durante la grabación o la transcripción. Se conecta a internet en exactamente dos casos: al descargar un modelo Whisper por primera vez (los modelos vienen de Hugging Face) y — solo si configuraste un topic de ntfy — cuando pides explícitamente un reporte de estado con `meetsvault://status_report`. Ese aviso contiene el título de la reunión y cuánto lleva grabando; está desactivado por defecto y nunca se dispara solo. Tu audio y tus transcripciones no se envían nunca a ningún lado.
 
 ---
 
