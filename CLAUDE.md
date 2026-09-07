@@ -16,7 +16,7 @@ If a change is purely internal (refactor, dependency bump, log message, threshol
 
 ## Project
 
-MeetsVault is a native macOS menu-bar app (macOS 15+, Apple Silicon) that records meetings and transcribes them locally using WhisperKit. No cloud, no network calls during recording or transcription.
+MeetsVault is a native macOS menu-bar app (macOS 15+, Apple Silicon) that records meetings and transcribes them locally using WhisperKit. No network calls during recording or transcription; the only exceptions are the one-time Whisper model download and an optional, off-by-default ntfy status push that the user must explicitly trigger.
 
 ## Build
 
@@ -76,7 +76,7 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `TranscriptionEngine` — protocol; `WhisperKitEngine` is the only implementation
 - `ModelManager` — tracks available/downloaded Whisper model variants
 
-**URL scheme:** `meetsvault://start?title=...` and `meetsvault://stop` are handled by `URLSchemeHandler`. `start` opens the `CaptureSourceWindow` prompt (it does NOT begin recording directly — the user must choose mic-only vs mic+system every time). `stop` calls `AudioRecorder.stop()` directly.
+**URL scheme:** `meetsvault://start?title=...`, `meetsvault://stop`, and `meetsvault://status_report` are handled by `URLSchemeHandler`. `start` opens the `CaptureSourceWindow` prompt (it does NOT begin recording directly — the user must choose mic-only vs mic+system every time). `stop` calls `AudioRecorder.stop()` directly. `status_report` pushes a notification to ntfy only when `state == .recording` and an `ntfyTopic` is configured; it is silent in every other case, presents no UI, and takes no prompt closure.
 
 **Transcript formatting knobs** (`TranscriptCleaner.swift`): segments from WhisperKit are grouped into paragraphs by `merge(...)`. Tunable thresholds:
 - `pauseThreshold` (default `0.5s`) — a gap larger than this between consecutive segments starts a new paragraph.
@@ -90,6 +90,8 @@ The app is entirely AppKit-based (no SwiftUI windows). `MeetsVaultApp` is the `@
 - `hasCompletedOnboarding` — bool
 - `hasAcceptedTerms` — bool; gated on step 1 of `WelcomeWindow` before onboarding can proceed
 - `lastCaptureMode` — raw value of the last `CaptureMode` the user picked; `nil` until the first successful Start
+- `ntfyTopic` — ntfy topic name for the `status_report` push; `nil` means the feature is off
+- `ntfyServerURL` — ntfy server base URL; defaults to `https://ntfy.sh`; no UI, `defaults write`-only
 
 Note: capture mode is persisted in Settings as `lastCaptureMode` and pre-selects the dialog the next time it opens. On first-ever launch it's `nil` — nothing is pre-selected and the button stays disabled until the user picks.
 

@@ -1,6 +1,6 @@
 # MeetsVault
 
-A native macOS menu-bar app that records meetings and transcribes them locally using [WhisperKit](https://github.com/argmaxinc/WhisperKit). No cloud, no subscription, fully private.
+A native macOS menu-bar app that records meetings and transcribes them locally using [WhisperKit](https://github.com/argmaxinc/WhisperKit). No cloud transcription, no subscription, fully private.
 
 ![macOS 15+](https://img.shields.io/badge/macOS-15%2B-blue) ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-required-lightgrey) ![License](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)
 
@@ -16,6 +16,7 @@ A native macOS menu-bar app that records meetings and transcribes them locally u
 - Saves transcripts as Markdown files with timestamps
 - Menu-bar only — no Dock icon, no window clutter
 - Triggered via menu bar or URL scheme (`meetsvault://start`, `meetsvault://stop`)
+- Check from your phone whether a recording is still running, via an optional [ntfy](https://ntfy.sh) push (`meetsvault://status_report`)
 - Multiple Whisper model sizes (tiny → large-v3)
 - Language switcher (20+ languages)
 - Audio files auto-deleted after 7 days; transcripts kept forever
@@ -87,9 +88,14 @@ open 'meetsvault://start?title=Weekly%20Sync'
 
 # Stop and transcribe (asks to confirm if a recording is in progress; ignored otherwise)
 open 'meetsvault://stop'
+
+# Ask whether a recording is in progress (pushes to ntfy only if one is)
+open 'meetsvault://status_report'
 ```
 
 > The `title` you pass pre-fills the **Meeting name** field in the dialog, where you can edit it before starting.
+
+> `status_report` is silent unless a recording is actually in progress **and** you have set an ntfy topic under **Phone Notifications** in the menu bar. No push means no recording. Subscribe your phone to the same topic in the ntfy app; the topic is stored only on your Mac and never leaves it except as the address of the push.
 
 ### Output
 
@@ -141,8 +147,9 @@ Models are downloaded once and cached in `~/Library/Application Support/MeetsVau
 
 ## Privacy
 
-- All processing happens on-device
-- No data is sent to any server
+- All recording and transcription processing happens on-device
+- Audio and transcripts are never sent to any server
+- The only network calls are downloading a Whisper model on first use, and — only if you configure it — an optional ntfy status push (see [Usage → URL scheme](#url-scheme)); it is off by default and never fires on its own
 - Audio is stored temporarily in `~/Library/Application Support/MeetsVault/recordings/` during transcription, then moved to your output folder (`.wav`) or deleted (temp files)
 - `.wav` files in your output folder are automatically deleted after 7 days
 

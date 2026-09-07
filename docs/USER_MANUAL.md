@@ -224,6 +224,27 @@ Any tool that can open a URL can trigger a recording. Point your calendar event'
 
 > **Tip:** You can create a Claude Code skill that fires `meetsvault://start` when you say "start the meeting" — the URL scheme is designed exactly for this kind of automation.
 
+### Check whether a recording is running
+
+```
+meetsvault://status_report
+```
+
+Sends a notification to your phone **only if a recording is currently in progress**. If nothing is being recorded, nothing happens — no notification is the answer. Useful when you have walked away from your Mac and cannot remember whether you left a recording running.
+
+This requires a one-time setup, described below. Without it, the command does nothing.
+
+### Setting up phone notifications
+
+1. Install the [ntfy](https://ntfy.sh) app on your phone.
+2. In the app, subscribe to a topic. Pick a long, hard-to-guess name — anyone who knows the topic name can read the notifications sent to it.
+3. On your Mac, click the MeetsVault menu-bar icon and choose **Phone Notifications → Set ntfy Topic…**.
+4. Type the same topic name and click **Save**. The submenu now shows `Topic: <your-topic>`.
+
+To turn phone notifications off, open the same dialog and save an empty field.
+
+The topic is stored only on your Mac. The only information that ever leaves it is the notification itself — the meeting title and how long the recording has been running — and only when you explicitly ask for a status report.
+
 ---
 
 ## 10. Switching Whisper Models
@@ -253,7 +274,7 @@ Downloaded models are cached in `~/Library/Application Support/MeetsVault/models
 
 ## 11. Privacy
 
-MeetsVault makes no network calls during recording or transcription. The only time it connects to the internet is when downloading a Whisper model for the first time (models come from Hugging Face). Once downloaded, the model lives on your Mac and is never re-fetched unless you delete it. Nothing about your meetings — not the audio, not the transcript, not the title — is ever sent to any server.
+MeetsVault makes no network calls during recording or transcription. It connects to the internet in exactly two cases: when downloading a Whisper model for the first time (models come from Hugging Face), and — only if you have configured an ntfy topic — when you explicitly ask for a status report with `meetsvault://status_report`. That status push contains the meeting title and how long the recording has been running; it is off by default and never fires on its own. Your audio and transcripts are never sent anywhere.
 
 ---
 
