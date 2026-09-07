@@ -142,11 +142,15 @@ open "meetsvault://status_report"
 
 Message contents:
 
-- Title: `🔴 Recording in progress`
+- Title: `Recording in progress` (ASCII only — this travels as the HTTP `Title`
+  header, and HTTP headers must be ASCII; the emoji comes from the tag instead)
 - Body: `<session title> · HH:MM:SS elapsed`, elapsed computed from
   `sessionStartDate`
-- Tags: `red_circle`
+- Tags: `red_circle`, which ntfy renders as 🔴 in the push
 - No custom `Priority`
+
+The body travels as the HTTP body in UTF-8, so a meeting title with accents or
+non-Latin characters is fine there.
 
 ## Error handling / edge cases
 
