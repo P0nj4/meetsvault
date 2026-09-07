@@ -106,16 +106,24 @@ final class Settings {
     }
 
     /// Pure validation for a user-entered ntfy topic.
-    /// ntfy topics are alphanumerics plus `-` and `_`; a `/` would silently
-    /// change the request path, which is the failure worth guarding against.
+    /// ntfy topics are restricted to `[-_A-Za-z0-9]`, max 64 characters.
+    /// This is an allowlist rather than a denylist: any character outside
+    /// that set (including "/", spaces, "?", "#", "%", and non-ASCII) gets
+    /// percent-encoded into the request path and silently rejected by ntfy,
+    /// which would make status_report go silent for the wrong reason.
+    private static let allowedTopicCharacters = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+    )
+    private static let maxTopicLength = 64
+
     static func validateNtfyTopic(_ raw: String) -> NtfyTopicValidation {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return .clear }
-        if trimmed.contains("/") {
-            return .invalid(reason: "A topic cannot contain \"/\".")
+        if trimmed.count > maxTopicLength {
+            return .invalid(reason: "A topic cannot be longer than \(maxTopicLength) characters.")
         }
-        if trimmed.rangeOfCharacter(from: .whitespacesAndNewlines) != nil {
-            return .invalid(reason: "A topic cannot contain spaces.")
+        if trimmed.rangeOfCharacter(from: allowedTopicCharacters.inverted) != nil {
+            return .invalid(reason: "A topic can only contain letters, digits, \"-\", and \"_\".")
         }
         return .valid(trimmed)
     }

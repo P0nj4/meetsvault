@@ -38,7 +38,7 @@ final class NtfyClient {
             return
         }
 
-        let host = components.host ?? "unknown"
+        let host = components.host!
 
         var request = URLRequest(url: url, timeoutInterval: 10)
         request.httpMethod = "POST"
@@ -49,7 +49,8 @@ final class NtfyClient {
 
         session.dataTask(with: request) { _, response, error in
             if let error {
-                NSLog("[MeetsVault] ntfy: request to %@ failed: %@", host, error.localizedDescription)
+                let nsError = error as NSError
+                NSLog("[MeetsVault] ntfy: request to %@ failed: domain=%@ code=%d", host, nsError.domain, nsError.code)
                 return
             }
             let status = (response as? HTTPURLResponse)?.statusCode ?? -1
