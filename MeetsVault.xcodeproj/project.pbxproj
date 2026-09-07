@@ -22,6 +22,7 @@
 		5F4E8D8FE65B0CF4146D582D /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 728F99AB06D86443491EE1F6 /* AppIcon.icns */; };
 		646F55DD00829F5E76066B27 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */; };
 		6745C01ECA3787A5313F45AC /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A4CEA586A9310E64091332 /* AudioRecorder.swift */; };
+		67661439155969B04702F896 /* RecordingStatusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CAB62D7A68BEA94ACCD44A /* RecordingStatusMessage.swift */; };
 		70BE0C71BD0EA61B369E0E21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240FE17F2791399C5D33E51 /* Settings.swift */; };
 		70FA831783169536BA8486EB /* LanguageCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200F2A306CCB1E2085FA370C /* LanguageCodeTests.swift */; };
 		7666A27E9AE2DFFCA52C9672 /* AboutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435DF182509402CA3B5199E4 /* AboutWindow.swift */; };
@@ -46,6 +47,7 @@
 		DFD513A6AD3BE3DC262AD6F7 /* Terms.swift in Sources */ = {isa = PBXBuildFile; fileRef = D842FB62C22A8D215F46908E /* Terms.swift */; };
 		E742E852654C04D44F02CE9E /* TranscriptCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66345DF0D004B520EBB62C9 /* TranscriptCleaner.swift */; };
 		EE58E32D237107B54F9315D3 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = C15EA9319BFFB6841B41C869 /* WhisperKit */; };
+		FCDCB269BB03A0FD3EF4D49C /* RecordingStatusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C152C6B2CA14907D5ABB6AEC /* RecordingStatusMessageTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,7 +87,9 @@
 		AF559BF6848058076AE7247A /* AudioRetentionJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRetentionJob.swift; sourceTree = "<group>"; };
 		B27F6C20A3C9B6279EC8A9E2 /* TranscriptCleanerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptCleanerTests.swift; sourceTree = "<group>"; };
 		B726AA17E630A571DDFF7CE4 /* TermsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsWindow.swift; sourceTree = "<group>"; };
+		B8CAB62D7A68BEA94ACCD44A /* RecordingStatusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingStatusMessage.swift; sourceTree = "<group>"; };
 		BC135583112DEED7552A5242 /* MeetsVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetsVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C152C6B2CA14907D5ABB6AEC /* RecordingStatusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingStatusMessageTests.swift; sourceTree = "<group>"; };
 		C503A5CB17746670B3DFDCB9 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		C80ED1BBE25A9326B950795F /* MeetsVault-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeetsVault-Bridging-Header.h"; sourceTree = "<group>"; };
 		CA08001A00FBE64166F53444 /* TranscriptWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptWriter.swift; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 			children = (
 				34BE1C6BC953E865CA8917D5 /* FilenameBuilderTests.swift */,
 				200F2A306CCB1E2085FA370C /* LanguageCodeTests.swift */,
+				C152C6B2CA14907D5ABB6AEC /* RecordingStatusMessageTests.swift */,
 				6889FB3630210DBB2CCC9A5C /* SettingsTests.swift */,
 				B27F6C20A3C9B6279EC8A9E2 /* TranscriptCleanerTests.swift */,
 				3F6CB7581DC092B801F0ABEE /* TranscriptDeduplicatorTests.swift */,
@@ -210,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				E56D0295B9A43DDD92B9F86A /* NotificationManager.swift */,
+				B8CAB62D7A68BEA94ACCD44A /* RecordingStatusMessage.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -414,6 +420,7 @@
 				9559D58701302BEE2AB8DB8A /* NotificationManager.swift in Sources */,
 				79B9D2FEAF04BAFA146FBAC0 /* ObjCExceptionCatcher.m in Sources */,
 				495B5B560A8036840DE50FFA /* PermissionsChecker.swift in Sources */,
+				67661439155969B04702F896 /* RecordingStatusMessage.swift in Sources */,
 				70BE0C71BD0EA61B369E0E21 /* Settings.swift in Sources */,
 				4D5CFAEC82ADB5D1C25E3932 /* SystemAudioCapture.swift in Sources */,
 				DFD513A6AD3BE3DC262AD6F7 /* Terms.swift in Sources */,
@@ -435,6 +442,7 @@
 			files = (
 				CA804E4EA241CC6496F6816C /* FilenameBuilderTests.swift in Sources */,
 				70FA831783169536BA8486EB /* LanguageCodeTests.swift in Sources */,
+				FCDCB269BB03A0FD3EF4D49C /* RecordingStatusMessageTests.swift in Sources */,
 				4FE09874165D0205324E2D39 /* SettingsTests.swift in Sources */,
 				41F79A757737EA48C645D679 /* TranscriptCleanerTests.swift in Sources */,
 				8846108125F163B56451D159 /* TranscriptDeduplicatorTests.swift in Sources */,
